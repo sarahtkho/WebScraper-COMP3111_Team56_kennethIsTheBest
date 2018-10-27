@@ -11,6 +11,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.Hyperlink;
 import java.util.List;
 
+//TODO i added these
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+
 
 /**
  * 
@@ -42,6 +46,25 @@ public class Controller {
     
     private WebScraper scraper;
     
+    
+    //TODO i added these
+    @FXML
+    private TableView<Item> table;
+    
+    @FXML
+    private TableColumn titleCol;
+    
+    @FXML
+    private TableColumn priceCol;
+    
+    @FXML
+    private TableColumn urlCol;
+    
+    @FXML
+    private TableColumn dateCol;
+    
+    //
+    
     /**
      * Default controller
      */
@@ -70,7 +93,10 @@ public class Controller {
     	}
     	textAreaConsole.setText(output);
     	
+    	//TODO (i added sth here)
+    	//scraper.displayTable(/*col,col,col,col???*/);
     	
+    	//
     }
     
     /**

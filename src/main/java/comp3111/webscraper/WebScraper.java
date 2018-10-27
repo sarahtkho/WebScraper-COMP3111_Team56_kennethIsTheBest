@@ -119,5 +119,12 @@ public class WebScraper {
 		}
 		return null;
 	}
+	
+	//TODO Task 4 (displayTable())
+	public void displayTable() {}
+	public void sortTable(/*afds*/) {}
+	
+	//TODO Task 5 (refine)
+	public void refine() {}
 
 }
