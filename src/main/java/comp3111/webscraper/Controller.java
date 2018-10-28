@@ -14,6 +14,11 @@ import java.util.List;
 //TODO i added these
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
+import javafx.scene.control.cell.PropertyValueFactory;
+
+
 
 
 /**
@@ -26,42 +31,31 @@ import javafx.scene.control.TableView;
  */
 public class Controller {
 
-    @FXML 
-    private Label labelCount; 
+    @FXML	private Label labelCount; 
 
-    @FXML 
-    private Label labelPrice; 
+    @FXML	private Label labelPrice; 
 
-    @FXML 
-    private Hyperlink labelMin; 
+    @FXML	private Hyperlink labelMin; 
 
-    @FXML 
-    private Hyperlink labelLatest; 
+    @FXML	private Hyperlink labelLatest; 
 
-    @FXML
-    private TextField textFieldKeyword;
+    @FXML	private TextField textFieldKeyword;
     
-    @FXML
-    private TextArea textAreaConsole;
+    @FXML	private TextArea textAreaConsole;
     
     private WebScraper scraper;
     
     
     //TODO i added these
-    @FXML
-    private TableView<Item> table;
+    @FXML	private TableView<Item> table;
     
-    @FXML
-    private TableColumn titleCol;
+    @FXML	private TableColumn titleCol;
     
-    @FXML
-    private TableColumn priceCol;
+    @FXML	private TableColumn priceCol;
     
-    @FXML
-    private TableColumn urlCol;
+    @FXML	private TableColumn urlCol;
     
-    @FXML
-    private TableColumn dateCol;
+    @FXML	private TableColumn dateCol;
     
     //
     
@@ -96,6 +90,16 @@ public class Controller {
     	//TODO (i added sth here)
     	//scraper.displayTable(/*col,col,col,col???*/);
     	
+    	ObservableList<Item> l = FXCollections.observableList(result);
+    	table.setItems(l);
+    	table.setEditable(true);
+    	titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
+    	priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+    	urlCol.setCellValueFactory(new PropertyValueFactory<>("url"));
+
+
+    	//table.getColumns().addAll(titleCol, priceCol, urlCol, dateCol);
+
     	//
     }
     
