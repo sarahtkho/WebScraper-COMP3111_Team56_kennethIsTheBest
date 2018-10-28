@@ -11,13 +11,14 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.Hyperlink;
 import java.util.List;
 
-//TODO i added these
+//TODO Sarah added these
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.scene.control.cell.PropertyValueFactory;
-
+import javafx.scene.control.Hyperlink;
+//
 
 
 
@@ -46,7 +47,7 @@ public class Controller {
     private WebScraper scraper;
     
     
-    //TODO i added these
+    //TODO Sarah added these
     @FXML	private TableView<Item> table;
     
     @FXML	private TableColumn titleCol;
@@ -56,7 +57,6 @@ public class Controller {
     @FXML	private TableColumn urlCol;
     
     @FXML	private TableColumn dateCol;
-    
     //
     
     /**
@@ -87,19 +87,12 @@ public class Controller {
     	}
     	textAreaConsole.setText(output);
     	
-    	//TODO (i added sth here)
-    	//scraper.displayTable(/*col,col,col,col???*/);
-    	
+    	//TODO (Sarah added sth here)
     	ObservableList<Item> l = FXCollections.observableList(result);
     	table.setItems(l);
-    	table.setEditable(true);
     	titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
     	priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
     	urlCol.setCellValueFactory(new PropertyValueFactory<>("url"));
-
-
-    	//table.getColumns().addAll(titleCol, priceCol, urlCol, dateCol);
-
     	//
     }
     
