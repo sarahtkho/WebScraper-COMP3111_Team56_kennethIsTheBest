@@ -22,7 +22,6 @@ import javafx.scene.control.Hyperlink;
 
 
 
-
 /**
  * 
  * @author kevinw
@@ -47,7 +46,6 @@ public class Controller {
     
     private WebScraper scraper;
     
-
     //TODO Sarah added these
     @FXML	private TableView<Item> table;
     
@@ -58,7 +56,6 @@ public class Controller {
     @FXML	private TableColumn urlCol;
     
     @FXML	private TableColumn dateCol;
-
     //
     
     /**
@@ -95,7 +92,6 @@ public class Controller {
     	titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
     	priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
     	urlCol.setCellValueFactory(new PropertyValueFactory<>("url"));
-    	//table.getColumns().addAll(titleCol, priceCol, urlCol, dateCol);
     	//
     }
     
