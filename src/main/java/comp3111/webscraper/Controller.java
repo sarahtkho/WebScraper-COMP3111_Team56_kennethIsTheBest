@@ -11,6 +11,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.Hyperlink;
 import java.util.List;
 
+import javafx.application.*;
 
 /**
  * 
@@ -69,6 +70,7 @@ public class Controller {
     		output += item.getTitle() + "\t" + item.getPrice() + "\t" + item.getUrl() + "\n";
     	}
     	textAreaConsole.setText(output);
+    	labelCount.setText(Integer.toString(result.size()));
     	
     	
     }
@@ -79,6 +81,21 @@ public class Controller {
     @FXML
     private void actionNew() {
     	System.out.println("actionNew");
+    }
+    @FXML
+    private void actionQuit() {
+    	Platform.exit();
+    	System.exit(0);
+    }
+
+    @FXML
+    private void actionClose() {
+
+    }
+    
+    @FXML
+    private void actionAbout() {
+    	
     }
 }
 
