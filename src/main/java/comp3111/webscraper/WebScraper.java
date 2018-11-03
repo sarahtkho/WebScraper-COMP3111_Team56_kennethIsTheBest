@@ -3,6 +3,8 @@ package comp3111.webscraper;
 import java.net.URLEncoder;
 import java.util.List;
 
+// imported exception class for feature 3
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
@@ -67,6 +69,9 @@ import java.util.Vector;
 public class WebScraper {
 
 	private static final String DEFAULT_URL = "https://newyork.craigslist.org/";
+	// Feature 2 Preloved will be used as the second selling portal
+	private static final String PRELOVED_URL = "https://www.preloved.co.uk/";
+	
 	private WebClient client;
 
 	/**
@@ -108,8 +113,86 @@ public class WebScraper {
 				item.setTitle(itemAnchor.asText());
 				item.setUrl(DEFAULT_URL + itemAnchor.getHrefAttribute());
 
-				item.setPrice(new Double(itemPrice.replace("$", "")));
-
+				//try-catch is added for line 118. There is no try-catch in the original version.
+				try {
+					item.setPrice(new Double(itemPrice.replace("$", "")));
+				}
+				catch(NumberFormatException e) {
+					item.setPrice(0.0);
+				}
+				
+				
+				result.add(item);
+			}
+			
+			//Feature 2 scrape data from Preloved
+			String search_Url_Preloved = PRELOVED_URL + "search?keyword=" + URLEncoder.encode(keyword, "UTF-8");
+			HtmlPage page_preloved = client.getPage(search_Url_Preloved);
+			List<?> items_preloved = (List<?>) page_preloved.getByXPath("//li[@class='search-result']");
+			for (int i=0;i<items_preloved.size();i++) {
+				HtmlElement htmlItem = (HtmlElement) items_preloved.get(i);
+				HtmlAnchor itemAnchor = ((HtmlAnchor) htmlItem.getFirstByXPath(".//h2/a[@class='search-result__title is-title']"));
+				HtmlElement spanPrice = ((HtmlElement) htmlItem.getFirstByXPath(".//span[@itemprop='price']"));
+				
+				// It is possible that an item doesn't have any price, we set the price to 0.0
+				// in this case
+				String itemPrice = spanPrice == null ? "0.0" : spanPrice.asText();
+				
+				Item item = new Item();
+				item.setTitle(itemAnchor.asText());
+				item.setUrl(PRELOVED_URL + itemAnchor.getHrefAttribute());
+				
+				//try-catch is added for line 118. There is no try-catch in the original version.
+				try {
+					item.setPrice(new Double(itemPrice.replace("$", "")));
+				}
+				catch(NumberFormatException e) {
+					item.setPrice(0.0);
+				}
+					
+				result.add(item);
+			}
+			
+			//Feature 3 Handle pagination
+			String search_Url_Preloved_pagination = search_Url_Preloved + "&page=";
+			int numPage=2;
+			try {
+				HtmlPage page_preloved_pagination = client.getPage(search_Url_Preloved_pagination + Integer.toString(numPage));
+				while(page_preloved_pagination!=null) {
+					List<?> items_preloved_pagination = (List<?>) page_preloved_pagination.getByXPath("//li[@class='search-result']");
+					for (int i=0;i<items_preloved_pagination.size();i++) {
+						HtmlElement htmlItem = (HtmlElement) items_preloved_pagination.get(i);
+						HtmlAnchor itemAnchor = ((HtmlAnchor) htmlItem.getFirstByXPath(".//h2/a[@class='search-result__title is-title']"));
+						HtmlElement spanPrice = ((HtmlElement) htmlItem.getFirstByXPath(".//span[@itemprop='price']"));
+						
+						// It is possible that an item doesn't have any price, we set the price to 0.0
+						// in this case
+						
+						String itemPrice = spanPrice == null ? "0.0" : spanPrice.asText();
+						
+						Item item = new Item();
+						item.setTitle(itemAnchor.asText());
+						item.setUrl(search_Url_Preloved_pagination + Integer.toString(numPage) + itemAnchor.getHrefAttribute());
+						
+						try {
+							item.setPrice(new Double(itemPrice.replace("£", "").replace(",", "")));
+						}
+						catch(NumberFormatException e) {
+							item.setPrice(0.0);
+						}
+						
+						result.add(item);
+					}
+					numPage++;
+					page_preloved_pagination = client.getPage(search_Url_Preloved_pagination + Integer.toString(numPage));
+				}
+			}
+			catch(FailingHttpStatusCodeException e) {
+				numPage--;
+				Item item = new Item();
+				item.setTitle("Number of pagination for this search: ");
+				item.setUrl(" pages. Search finsihed. ");
+				item.setPrice(numPage);
 				result.add(item);
 			}
 			client.close();
