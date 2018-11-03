@@ -113,15 +113,8 @@ public class WebScraper {
 				item.setTitle(itemAnchor.asText());
 				item.setUrl(DEFAULT_URL + itemAnchor.getHrefAttribute());
 
-				//try-catch is added for line 118. There is no try-catch in the original version.
-				try {
-					item.setPrice(new Double(itemPrice.replace("$", "")));
-				}
-				catch(NumberFormatException e) {
-					item.setPrice(0.0);
-				}
-				
-				
+				item.setPrice(new Double(itemPrice.replace("$", "")));
+
 				result.add(item);
 			}
 			
@@ -132,7 +125,7 @@ public class WebScraper {
 			for (int i=0;i<items_preloved.size();i++) {
 				HtmlElement htmlItem = (HtmlElement) items_preloved.get(i);
 				HtmlAnchor itemAnchor = ((HtmlAnchor) htmlItem.getFirstByXPath(".//h2/a[@class='search-result__title is-title']"));
-				HtmlElement spanPrice = ((HtmlElement) htmlItem.getFirstByXPath(".//span[@itemprop='price']"));
+				HtmlElement spanPrice = ((HtmlElement) htmlItem.getFirstByXPath(".//span/span[@itemprop='price']"));
 				
 				// It is possible that an item doesn't have any price, we set the price to 0.0
 				// in this case
@@ -142,13 +135,13 @@ public class WebScraper {
 				item.setTitle(itemAnchor.asText());
 				item.setUrl(PRELOVED_URL + itemAnchor.getHrefAttribute());
 				
-				//try-catch is added for line 118. There is no try-catch in the original version.
 				try {
-					item.setPrice(new Double(itemPrice.replace("$", "")));
+					item.setPrice(new Double(itemPrice.replace("£", "").replace(",", "")));
 				}
 				catch(NumberFormatException e) {
 					item.setPrice(0.0);
 				}
+				
 					
 				result.add(item);
 			}
@@ -163,7 +156,7 @@ public class WebScraper {
 					for (int i=0;i<items_preloved_pagination.size();i++) {
 						HtmlElement htmlItem = (HtmlElement) items_preloved_pagination.get(i);
 						HtmlAnchor itemAnchor = ((HtmlAnchor) htmlItem.getFirstByXPath(".//h2/a[@class='search-result__title is-title']"));
-						HtmlElement spanPrice = ((HtmlElement) htmlItem.getFirstByXPath(".//span[@itemprop='price']"));
+						HtmlElement spanPrice = ((HtmlElement) htmlItem.getFirstByXPath(".//span/span[@itemprop='price']"));
 						
 						// It is possible that an item doesn't have any price, we set the price to 0.0
 						// in this case
