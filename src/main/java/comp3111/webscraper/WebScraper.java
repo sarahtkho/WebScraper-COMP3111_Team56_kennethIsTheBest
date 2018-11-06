@@ -1,10 +1,11 @@
 package comp3111.webscraper;
 
 import java.net.URLEncoder;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-// imported exception class for feature 3
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;// imported exception class for feature 3
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
@@ -71,7 +72,10 @@ public class WebScraper {
 	private static final String DEFAULT_URL = "https://newyork.craigslist.org/";
 	// Feature 2 Preloved will be used as the second selling portal
 	private static final String PRELOVED_URL = "https://www.preloved.co.uk/";
-	
+	// Feature 3 Record # of pages being searched
+	private int numPage;
+	// Feature 3 Record # of search results
+	private int numResults;
 	private WebClient client;
 
 	/**
@@ -81,6 +85,8 @@ public class WebScraper {
 		client = new WebClient();
 		client.getOptions().setCssEnabled(false);
 		client.getOptions().setJavaScriptEnabled(false);
+		numPage = 2;
+		numResults = 0;
 	}
 
 	/**
@@ -90,7 +96,7 @@ public class WebScraper {
 	 * @return A list of Item that has found. A zero size list is return if nothing is found. Null if any exception (e.g. no connectivity)
 	 */
 	public List<Item> scrape(String keyword) {
-
+		numResults = 0;
 		try {
 			String searchUrl = DEFAULT_URL + "search/sss?sort=rel&query=" + URLEncoder.encode(keyword, "UTF-8");
 			HtmlPage page = client.getPage(searchUrl);
@@ -112,10 +118,11 @@ public class WebScraper {
 				Item item = new Item();
 				item.setTitle(itemAnchor.asText());
 				item.setUrl(DEFAULT_URL + itemAnchor.getHrefAttribute());
-
+					
 				item.setPrice(new Double(itemPrice.replace("$", "")));
 
 				result.add(item);
+				numResults++;
 			}
 			
 			//Feature 2 scrape data from Preloved
@@ -136,7 +143,8 @@ public class WebScraper {
 				item.setUrl(PRELOVED_URL + itemAnchor.getHrefAttribute());
 				
 				try {
-					item.setPrice(new Double(itemPrice.replace("£", "").replace(",", "")));
+					//Preloved is an UK selling portal which uses £. 1 GBP = 1.31 USD
+					item.setPrice(new Double(itemPrice.replace("£", "").replace(",", "")) * 1.31);
 				}
 				catch(NumberFormatException e) {
 					item.setPrice(0.0);
@@ -144,11 +152,12 @@ public class WebScraper {
 				
 					
 				result.add(item);
+				numResults++;
 			}
 			
 			//Feature 3 Handle pagination
 			String search_Url_Preloved_pagination = search_Url_Preloved + "&page=";
-			int numPage=2;
+			numPage=2;
 			try {
 				HtmlPage page_preloved_pagination = client.getPage(search_Url_Preloved_pagination + Integer.toString(numPage));
 				while(page_preloved_pagination!=null) {
@@ -168,25 +177,24 @@ public class WebScraper {
 						item.setUrl(search_Url_Preloved_pagination + Integer.toString(numPage) + itemAnchor.getHrefAttribute());
 						
 						try {
-							item.setPrice(new Double(itemPrice.replace("£", "").replace(",", "")));
+							//Preloved is an UK selling portal which uses £. 1 GBP = 1.31 USD
+							item.setPrice(new Double(itemPrice.replace("£", "").replace(",", "")) * 1.31);
 						}
 						catch(NumberFormatException e) {
 							item.setPrice(0.0);
 						}
 						
 						result.add(item);
+						numResults++;
 					}
 					numPage++;
 					page_preloved_pagination = client.getPage(search_Url_Preloved_pagination + Integer.toString(numPage));
 				}
 			}
 			catch(FailingHttpStatusCodeException e) {
+				//Sort the items
+				Collections.sort(result);
 				numPage--;
-				Item item = new Item();
-				item.setTitle("Number of pagination for this search: ");
-				item.setUrl(" pages. Search finsihed. ");
-				item.setPrice(numPage);
-				result.add(item);
 			}
 			client.close();
 			return result;
@@ -195,5 +203,10 @@ public class WebScraper {
 		}
 		return null;
 	}
-
+	public int getNumPage() {
+		return numPage;
+	}
+	public int getNumResults() {
+		return numResults;
+	}
 }

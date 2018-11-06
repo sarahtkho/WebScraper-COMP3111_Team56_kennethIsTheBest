@@ -68,6 +68,12 @@ public class Controller {
     	for (Item item : result) {
     		output += item.getTitle() + "\t" + item.getPrice() + "\t" + item.getUrl() + "\n";
     	}
+    	output += "\nSearch on selling portal: Craigslist and Preloved."
+    			+ "\nNumber of pagination on Craigslist: 1 page"
+    			+ "\nNumber of pagination on Preloved: " + scraper.getNumPage() + " pages."
+    			+ "\nNumber of results: " + scraper.getNumResults() + "."
+    			+ "\nSearch finsihed.\n";
+    	output += "Items are sorted in ascending order of its price. If two items have the same price, item sold on Craiglist go first. If two items from the same portal has the same price, they can be sorted in any order.\n";
     	textAreaConsole.setText(output);
     	
     	

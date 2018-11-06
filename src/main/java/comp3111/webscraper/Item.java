@@ -2,7 +2,7 @@ package comp3111.webscraper;
 
 
 
-public class Item {
+public class Item implements Comparable<Item>{
 	private String title ; 
 	private double price ;
 	private String url ;
@@ -26,5 +26,16 @@ public class Item {
 		this.url = url;
 	}
 	
-
+	//Used to sort the Vector<Item> result
+	@Override
+	public int compareTo(Item other) {
+		if(this.price > other.price)
+			return 1;
+		else if(this.price < other.price)
+			return -1;
+		else if(this.url.contains("craigslist")) 
+			return -1;
+		else
+			return 1;
+	}
 }
