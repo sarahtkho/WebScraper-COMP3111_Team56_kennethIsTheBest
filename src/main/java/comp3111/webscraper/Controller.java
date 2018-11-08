@@ -9,6 +9,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Hyperlink;
+
+import java.util.Calendar;
 import java.util.List;
 
 import javafx.application.*;
@@ -72,7 +74,32 @@ public class Controller {
     	textAreaConsole.setText(output);
     	labelCount.setText(Integer.toString(result.size()));
     	
+    	// calculaate the avg price
+    	int countPrice = 0;
+    	double totalPrice = 0.0;
+    	Item minItem = null, lastDate = null;
     	
+    	// check if result have item inside (result.size() > 0 )
+    	if (result.size() !=0) {
+	    	for (Item item:result) {
+	    		if(item.getPrice()>0.0) {
+	    			countPrice++;
+	    			totalPrice+= item.getPrice();
+	    			// assign the first valid item to MIN or compare the item of MIN and in the result list 
+	    			if(minItem == null || minItem.getPrice()>item.getPrice())
+	    				minItem = item;
+	    			// assign the first valid item to DATE or compare the item of DATE and in the result list
+	    			if(lastDate == null || lastDate.getDate().before(item.getDate()))
+	    				lastDate = item;
+	    		}
+	    	}
+	    	
+	    	labelPrice.setText(Double.toString(totalPrice/countPrice));
+	    	labelMin.setText(Double.toString(minItem.getPrice()));
+	    	labelLatest.setText(lastDate.getStringDate());
+	    	
+	    	
+    	}
     }
     
     /**
@@ -90,7 +117,7 @@ public class Controller {
 
     @FXML
     private void actionClose() {
-
+    	
     }
     
     @FXML
