@@ -85,7 +85,7 @@ public class WebScraper {
 		client = new WebClient();
 		client.getOptions().setCssEnabled(false);
 		client.getOptions().setJavaScriptEnabled(false);
-		numPage = 2;
+		numPage = 0;
 		numResults = 0;
 	}
 
@@ -96,6 +96,7 @@ public class WebScraper {
 	 * @return A list of Item that has found. A zero size list is return if nothing is found. Null if any exception (e.g. no connectivity)
 	 */
 	public List<Item> scrape(String keyword) {
+		numPage=0;
 		numResults = 0;
 		try {
 			String searchUrl = DEFAULT_URL + "search/sss?sort=rel&query=" + URLEncoder.encode(keyword, "UTF-8");
@@ -110,7 +111,7 @@ public class WebScraper {
 				HtmlElement htmlItem = (HtmlElement) items.get(i);
 				HtmlAnchor itemAnchor = ((HtmlAnchor) htmlItem.getFirstByXPath(".//p[@class='result-info']/a"));
 				HtmlElement spanPrice = ((HtmlElement) htmlItem.getFirstByXPath(".//a/span[@class='result-price']"));
-
+				HtmlElement postdate = ((HtmlElement) htmlItem.getFirstByXPath(".//p[@class='result-info']/time[@class='result-date']"));
 				// It is possible that an item doesn't have any price, we set the price to 0.0
 				// in this case
 				String itemPrice = spanPrice == null ? "0.0" : spanPrice.asText();
@@ -120,10 +121,47 @@ public class WebScraper {
 				item.setUrl(DEFAULT_URL + itemAnchor.getHrefAttribute());
 					
 				item.setPrice(new Double(itemPrice.replace("$", "")));
-
+				item.setPostdate(postdate.asText());
 				result.add(item);
 				numResults++;
 			}
+			numPage++;
+			
+			//Feature 3 Handle pagination
+			try {
+				int temp=2;
+				int numItems=120;
+				String searchUrl_pagination = DEFAULT_URL + "search/sss?s="+ Integer.toString(numItems) +"sort=rel&query=" + URLEncoder.encode(keyword, "UTF-8");
+				HtmlPage page_crai_pagination = client.getPage(searchUrl_pagination);
+				for(int p=0;p<3;p++) {
+			//	while(page_crai_pagination!=null) {
+					List<?> items_crai_pagination = (List<?>) page_crai_pagination.getByXPath("//li[@class='result-row']");
+					for(int i=0;i<items_crai_pagination.size();i++) {
+						HtmlElement htmlItem = (HtmlElement) items_crai_pagination.get(i);
+						HtmlAnchor itemAnchor = ((HtmlAnchor) htmlItem.getFirstByXPath(".//p[@class='result-info']/a"));
+						HtmlElement spanPrice = ((HtmlElement) htmlItem.getFirstByXPath(".//a/span[@class='result-price']"));
+						HtmlElement postdate = ((HtmlElement) htmlItem.getFirstByXPath(".//p[@class='result-info']/time[@class='result-date']"));
+						// It is possible that an item doesn't have any price, we set the price to 0.0
+						// in this case
+						String itemPrice = spanPrice == null ? "0.0" : spanPrice.asText();
+
+						Item item = new Item();
+						item.setTitle(itemAnchor.asText());
+						item.setUrl(DEFAULT_URL + itemAnchor.getHrefAttribute());
+							
+						item.setPrice(new Double(itemPrice.replace("$", "")));
+						item.setPostdate(postdate.asText());
+						result.add(item);
+						numResults++;
+					}
+					numItems = temp*numItems;
+					temp++;
+					numPage++;
+					searchUrl_pagination = DEFAULT_URL + "search/sss?s="+ Integer.toString(temp) +"sort=rel&query=" + URLEncoder.encode(keyword, "UTF-8");
+					page_crai_pagination = client.getPage(searchUrl_pagination);
+				}
+				
+			}catch(FailingHttpStatusCodeException e) {} 
 			
 			//Feature 2 scrape data from Preloved
 			String search_Url_Preloved = PRELOVED_URL + "search?keyword=" + URLEncoder.encode(keyword, "UTF-8");
@@ -149,53 +187,19 @@ public class WebScraper {
 				catch(NumberFormatException e) {
 					item.setPrice(0.0);
 				}
-				
+				//Get post date
+				HtmlPage item_page_preloved = client.getPage(itemAnchor.getHrefAttribute());
+				HtmlElement postdate = (HtmlElement) item_page_preloved.getFirstByXPath("//li[@class='classified__additional__meta__item classified__timeago']");
+				item.setPostdate(postdate.asText().replace("This advert was updated ",""));
 					
 				result.add(item);
 				numResults++;
 			}
 			
-			//Feature 3 Handle pagination
-			String search_Url_Preloved_pagination = search_Url_Preloved + "&page=";
-			numPage=2;
-			try {
-				HtmlPage page_preloved_pagination = client.getPage(search_Url_Preloved_pagination + Integer.toString(numPage));
-				while(page_preloved_pagination!=null) {
-					List<?> items_preloved_pagination = (List<?>) page_preloved_pagination.getByXPath("//li[@class='search-result']");
-					for (int i=0;i<items_preloved_pagination.size();i++) {
-						HtmlElement htmlItem = (HtmlElement) items_preloved_pagination.get(i);
-						HtmlAnchor itemAnchor = ((HtmlAnchor) htmlItem.getFirstByXPath(".//h2/a[@class='search-result__title is-title']"));
-						HtmlElement spanPrice = ((HtmlElement) htmlItem.getFirstByXPath(".//span/span[@itemprop='price']"));
-						
-						// It is possible that an item doesn't have any price, we set the price to 0.0
-						// in this case
-						
-						String itemPrice = spanPrice == null ? "0.0" : spanPrice.asText();
-						
-						Item item = new Item();
-						item.setTitle(itemAnchor.asText());
-						item.setUrl(search_Url_Preloved_pagination + Integer.toString(numPage) + itemAnchor.getHrefAttribute());
-						
-						try {
-							//Preloved is an UK selling portal which uses £. 1 GBP = 1.31 USD
-							item.setPrice(new Double(itemPrice.replace("£", "").replace(",", "")) * 1.31);
-						}
-						catch(NumberFormatException e) {
-							item.setPrice(0.0);
-						}
-						
-						result.add(item);
-						numResults++;
-					}
-					numPage++;
-					page_preloved_pagination = client.getPage(search_Url_Preloved_pagination + Integer.toString(numPage));
-				}
-			}
-			catch(FailingHttpStatusCodeException e) {
-				//Sort the items
-				Collections.sort(result);
-				numPage--;
-			}
+			
+			
+			//Sort the items
+			Collections.sort(result);
 			client.close();
 			return result;
 		} catch (Exception e) {
