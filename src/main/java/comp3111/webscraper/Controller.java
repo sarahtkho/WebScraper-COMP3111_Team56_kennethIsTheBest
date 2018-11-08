@@ -9,6 +9,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
 
 import java.util.Calendar;
 import java.util.List;
@@ -45,6 +49,8 @@ public class Controller {
     
     private WebScraper scraper;
     
+    private HostServices hostService;
+    
     /**
      * Default controller
      */
@@ -58,6 +64,10 @@ public class Controller {
     @FXML
     private void initialize() {
     	
+    }
+    
+    public void setHostServices(HostServices hostServices) {
+    	this.hostService = hostServices;
     }
     
     /**
@@ -86,17 +96,32 @@ public class Controller {
 	    			countPrice++;
 	    			totalPrice+= item.getPrice();
 	    			// assign the first valid item to MIN or compare the item of MIN and in the result list 
-	    			if(minItem == null || minItem.getPrice()>item.getPrice())
+	    			if(minItem == null || minItem.getPrice()>item.getPrice()) {
 	    				minItem = item;
+	    				labelMin.setOnAction(new EventHandler<ActionEvent>() {
+	    					@Override
+	    					public void handle(ActionEvent e) {
+	    						hostService.showDocument(item.getUrl());
+	    					}
+	    				});
+	    			}
+	    			
 	    			// assign the first valid item to DATE or compare the item of DATE and in the result list
-	    			if(lastDate == null || lastDate.getDate().before(item.getDate()))
+	    			/*if(lastDate == null || lastDate.getDate().before(item.getDate())){
 	    				lastDate = item;
+	    				labelLatest.setOnAction(new EventHandler<ActionEvent>() {
+	    					@Override
+	    					public void handle(ActionEvent e) {
+	    					
+	    					}
+    				}
+	    				*/
 	    		}
 	    	}
 	    	
 	    	labelPrice.setText(Double.toString(totalPrice/countPrice));
 	    	labelMin.setText(Double.toString(minItem.getPrice()));
-	    	labelLatest.setText(lastDate.getStringDate());
+	    	//labelLatest.setText(lastDate.getStringDate());
 	    	
 	    	
     	}
@@ -117,11 +142,26 @@ public class Controller {
 
     @FXML
     private void actionClose() {
+    	Platform.exit();
     	
     }
     
     @FXML
     private void actionAbout() {
+    	Alert alert = new Alert(AlertType.INFORMATION);
+    	alert.setTitle("Team Information");
+    	alert.setHeaderText("Team Information: ");
+    	alert.setContentText("Name: \tStudent ID: \tGithub account: \nHo Wai Kin\twkhoae\tjohnnyn2\nFung Hing Lun\thlfungad\tvictor0362\nHo Tsz Kiu\ttkhoad\tsarahtkho");
+    	alert.showAndWait();
+    }
+    
+    @FXML
+    private void actionLatest() {
+    	
+    }
+
+    @FXML
+    private void actionMinPrice() {
     	
     }
 }

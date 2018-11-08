@@ -106,7 +106,7 @@ public class WebScraper {
 
 				Item item = new Item();
 				item.setTitle(itemAnchor.asText());
-				item.setUrl(DEFAULT_URL + itemAnchor.getHrefAttribute());
+				item.setUrl(itemAnchor.getHrefAttribute());
 				item.setDate(timeDate.getAttribute("datetime"));
 				
 				item.setPrice(new Double(itemPrice.replace("$", "")));
