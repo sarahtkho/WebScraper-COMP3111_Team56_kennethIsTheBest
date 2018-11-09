@@ -92,6 +92,48 @@ public class Controller {
     /**
      * Called when the search button is pressed.
      */
+    
+    private void summarizing(List<?> listItem) {
+    	String output = "";
+    	// calculate the avg price
+    	int countPrice = 0;
+    	double totalPrice = 0.0;
+    	Item minItem = null, lastDate = null;
+    	for (Item item : lastResult) {
+    		output += item.getTitle() + "\t" + item.getPrice() + "\t" + item.getUrl() + "\n";
+    		if(item.getPrice()>0.0) {
+    			countPrice++;
+    			totalPrice+= item.getPrice();
+    			// assign the first valid item to MIN or compare the item of MIN and in the result list 
+    			if(minItem == null || minItem.getPrice()>item.getPrice()) {
+    				minItem = item;
+    				labelMin.setOnAction(new EventHandler<ActionEvent>() {
+    					@Override
+    					public void handle(ActionEvent e) {
+    						hostService.showDocument(item.getUrl());
+    					}
+    				});
+    			}
+    			
+    			/*// assign the first valid item to DATE or compare the item of DATE and in the result list
+    			if(lastDate == null || lastDate.getDate().before(item.getDate())){
+    				lastDate = item;
+    				labelLatest.setOnAction(new EventHandler<ActionEvent>() {
+    					@Override
+    					public void handle(ActionEvent e) {
+    						hostService.showDocument(item.getUrl());
+    					}
+				}
+    				*/
+    		}
+    	}
+    	labelCount.setText(Integer.toString(listItem.size()));
+    	textAreaConsole.setText(output);
+    	labelPrice.setText(Double.toString(totalPrice/countPrice));
+    	labelMin.setText(Double.toString(minItem.getPrice()));
+    	//labelLatest.setText(lastDate.getStringDate());
+    }
+    
     @FXML
     private void actionSearch() {
     	lastSearch.setDisable(false);
@@ -105,51 +147,11 @@ public class Controller {
     		newResult.clear();
     	}
     	
-    	String output = "";
-    	for (Item item : result) {
-    		output += item.getTitle() + "\t" + item.getPrice() + "\t" + item.getUrl() + "\n";
-    	}
-    	textAreaConsole.setText(output);
-    	labelCount.setText(Integer.toString(result.size()));
-    	
-    	// calculate the avg price
-    	int countPrice = 0;
-    	double totalPrice = 0.0;
-    	Item minItem = null, lastDate = null;
-    	
     	// check if result have item inside (result.size() > 0 )
     	if (result.size() !=0) {
-	    	for (Item item:result) {
-	    		if(item.getPrice()>0.0) {
-	    			countPrice++;
-	    			totalPrice+= item.getPrice();
-	    			// assign the first valid item to MIN or compare the item of MIN and in the result list 
-	    			if(minItem == null || minItem.getPrice()>item.getPrice()) {
-	    				minItem = item;
-	    				labelMin.setOnAction(new EventHandler<ActionEvent>() {
-	    					@Override
-	    					public void handle(ActionEvent e) {
-	    						hostService.showDocument(item.getUrl());
-	    					}
-	    				});
-	    			}
-	    			
-	    			// assign the first valid item to DATE or compare the item of DATE and in the result list
-	    			/*if(lastDate == null || lastDate.getDate().before(item.getDate())){
-	    				lastDate = item;
-	    				labelLatest.setOnAction(new EventHandler<ActionEvent>() {
-	    					@Override
-	    					public void handle(ActionEvent e) {
-	    						hostService.showDocument(item.getUrl());
-	    					}
-    				}
-	    				*/
-	    		}
-	    	}
+    		summarizing(result);
 	    	newResult.addAll(result);
-	    	labelPrice.setText(Double.toString(totalPrice/countPrice));
-	    	labelMin.setText(Double.toString(minItem.getPrice()));
-	    	//labelLatest.setText(lastDate.getStringDate());
+	    	
     	} else {
     		labelPrice.setText("-");
     		labelMin.setText("-");
@@ -167,42 +169,7 @@ public class Controller {
     	lastSearch.setDisable(true);
     	System.out.println("actionNew");
     	if(lastResult.size()!=0) {
-	    	String output = "";
-	    	// calculate the avg price
-	    	int countPrice = 0;
-	    	double totalPrice = 0.0;
-	    	Item minItem = null, lastDate = null;
-	    	for (Item item : lastResult) {
-	    		output += item.getTitle() + "\t" + item.getPrice() + "\t" + item.getUrl() + "\n";
-	    		if(item.getPrice()>0.0) {
-	    			countPrice++;
-	    			totalPrice+= item.getPrice();
-	    			// assign the first valid item to MIN or compare the item of MIN and in the result list 
-	    			if(minItem == null || minItem.getPrice()>item.getPrice()) {
-	    				minItem = item;
-	    				labelMin.setOnAction(new EventHandler<ActionEvent>() {
-	    					@Override
-	    					public void handle(ActionEvent e) {
-	    						hostService.showDocument(item.getUrl());
-	    					}
-	    				});
-	    			}
-	    			
-	    			/*// assign the first valid item to DATE or compare the item of DATE and in the result list
-	    			if(lastDate == null || lastDate.getDate().before(item.getDate())){
-	    				lastDate = item;
-	    				labelLatest.setOnAction(new EventHandler<ActionEvent>() {
-	    					@Override
-	    					public void handle(ActionEvent e) {
-	    						hostService.showDocument(item.getUrl());
-	    					}
-    				}
-	    				*/
-	    		}
-	    	}
-	    	textAreaConsole.setText(output);
-	    	labelPrice.setText(Double.toString(totalPrice/countPrice));
-	    	labelMin.setText(Double.toString(minItem.getPrice()));
+    		summarizing(lastResult);
     	} else {
     		System.out.println("no previous result");
     		initialize();
