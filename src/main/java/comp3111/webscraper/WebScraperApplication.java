@@ -57,7 +57,6 @@ public class WebScraperApplication extends Application {
     		
 
 	}
-
 	/**
 	 * Entry point of the program. No argument should be supplied
 	 * @param args - not used.

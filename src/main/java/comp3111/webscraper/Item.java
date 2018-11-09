@@ -1,7 +1,6 @@
 package comp3111.webscraper;
 
 
-
 public class Item implements Comparable<Item>{
 	private String title ; 
 	private double price ;

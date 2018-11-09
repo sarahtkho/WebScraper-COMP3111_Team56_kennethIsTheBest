@@ -126,7 +126,6 @@ public class WebScraper {
 				numResults++;
 			}
 			numPage++;
-			
 			//Feature 3 Handle pagination
 			try {
 				int temp=2;
