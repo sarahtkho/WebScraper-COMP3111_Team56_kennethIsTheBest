@@ -130,7 +130,7 @@ public class WebScraper {
 			try {
 				int temp=2;
 				int numItems=120;
-				String searchUrl_pagination = DEFAULT_URL + "search/sss?s="+ Integer.toString(numItems) +"sort=rel&query=" + URLEncoder.encode(keyword, "UTF-8");
+				String searchUrl_pagination = DEFAULT_URL + "search/sss?s="+ Integer.toString(numItems) +"&sort=rel&query=" + URLEncoder.encode(keyword, "UTF-8");
 				HtmlPage page_crai_pagination = client.getPage(searchUrl_pagination);
 				for(int p=0;p<3;p++) {
 			//	while(page_crai_pagination!=null) {
@@ -156,7 +156,7 @@ public class WebScraper {
 					numItems = temp*numItems;
 					temp++;
 					numPage++;
-					searchUrl_pagination = DEFAULT_URL + "search/sss?s="+ Integer.toString(temp) +"sort=rel&query=" + URLEncoder.encode(keyword, "UTF-8");
+					searchUrl_pagination = DEFAULT_URL + "search/sss?s="+ Integer.toString(numItems) +"&sort=rel&query=" + URLEncoder.encode(keyword, "UTF-8");
 					page_crai_pagination = client.getPage(searchUrl_pagination);
 				}
 				
