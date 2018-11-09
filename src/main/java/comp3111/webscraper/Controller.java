@@ -32,30 +32,41 @@ import javafx.scene.control.Hyperlink;
  */
 public class Controller {
 
-    @FXML	private Label labelCount; 
+    @FXML	
+    private Label labelCount; 
 
-    @FXML	private Label labelPrice; 
+    @FXML	
+    private Label labelPrice; 
 
-    @FXML	private Hyperlink labelMin; 
+    @FXML	
+    private Hyperlink labelMin; 
 
-    @FXML	private Hyperlink labelLatest; 
+    @FXML	
+    private Hyperlink labelLatest; 
 
-    @FXML	private TextField textFieldKeyword;
+    @FXML	
+    private TextField textFieldKeyword;
     
-    @FXML	private TextArea textAreaConsole;
+    @FXML	
+    private TextArea textAreaConsole;
     
     private WebScraper scraper;
     
     //TODO Sarah added these
-    @FXML	private TableView<Item> table;
+    @FXML	
+    private TableView<Item> table;
     
-    @FXML	private TableColumn titleCol;
+    @FXML	
+    private TableColumn titleCol;
     
-    @FXML	private TableColumn priceCol;
+    @FXML	
+    private TableColumn priceCol;
     
-    @FXML	private TableColumn urlCol;
+    @FXML	
+    private TableColumn urlCol;
     
-    @FXML	private TableColumn dateCol;
+    @FXML	
+    private TableColumn dateCol;
     //
     
     /**
