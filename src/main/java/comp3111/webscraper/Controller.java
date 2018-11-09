@@ -13,6 +13,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
+import javafx.scene.control.MenuItem;
 
 import java.util.Calendar;
 import java.util.List;
@@ -29,7 +30,10 @@ import javafx.application.*;
  */
 public class Controller {
 
-    @FXML 
+    @FXML
+    private MenuItem lastSearch;
+	
+	@FXML 
     private Label labelCount; 
 
     @FXML 
@@ -51,6 +55,8 @@ public class Controller {
     
     private HostServices hostService;
     
+    private List<Item> lastResult;
+    
     /**
      * Default controller
      */
@@ -63,7 +69,12 @@ public class Controller {
      */
     @FXML
     private void initialize() {
-    	
+    	lastSearch.setDisable(true);
+    	textAreaConsole.setText("");
+    	labelCount.setText("<total>");
+    	labelPrice.setText("<AvgPrice>");
+    	labelMin.setText("<Lowest>");
+    	labelLatest.setText("<Latest>");
     }
     
     public void setHostServices(HostServices hostServices) {
@@ -75,8 +86,10 @@ public class Controller {
      */
     @FXML
     private void actionSearch() {
+    	lastSearch.setDisable(false);
     	System.out.println("actionSearch: " + textFieldKeyword.getText());
     	List<Item> result = scraper.scrape(textFieldKeyword.getText());
+    	lastResult.addAll(result);
     	String output = "";
     	for (Item item : result) {
     		output += item.getTitle() + "\t" + item.getPrice() + "\t" + item.getUrl() + "\n";
@@ -84,7 +97,7 @@ public class Controller {
     	textAreaConsole.setText(output);
     	labelCount.setText(Integer.toString(result.size()));
     	
-    	// calculaate the avg price
+    	// calculate the avg price
     	int countPrice = 0;
     	double totalPrice = 0.0;
     	Item minItem = null, lastDate = null;
@@ -112,7 +125,7 @@ public class Controller {
 	    				labelLatest.setOnAction(new EventHandler<ActionEvent>() {
 	    					@Override
 	    					public void handle(ActionEvent e) {
-	    					
+	    						hostService.showDocument(item.getUrl());
 	    					}
     				}
 	    				*/
@@ -122,8 +135,12 @@ public class Controller {
 	    	labelPrice.setText(Double.toString(totalPrice/countPrice));
 	    	labelMin.setText(Double.toString(minItem.getPrice()));
 	    	//labelLatest.setText(lastDate.getStringDate());
-	    	
-	    	
+    	} else {
+    		labelPrice.setText("-");
+    		labelMin.setText("-");
+    		labelMin.setOnAction(null);
+    		labelLatest.setText("-");
+    		labelLatest.setOnAction(null);
     	}
     }
     
@@ -132,6 +149,7 @@ public class Controller {
      */
     @FXML
     private void actionNew() {
+    	lastSearch.setDisable(true);
     	System.out.println("actionNew");
     }
     @FXML
@@ -142,8 +160,45 @@ public class Controller {
 
     @FXML
     private void actionClose() {
-    	Platform.exit();
-    	
+    	initialize();
+    	if(lastResult.size()!=0) {
+	    	String output = "";
+	    	// calculate the avg price
+	    	int countPrice = 0;
+	    	double totalPrice = 0.0;
+	    	Item minItem = null, lastDate = null;
+	    	for (Item item : lastResult) {
+	    		output += item.getTitle() + "\t" + item.getPrice() + "\t" + item.getUrl() + "\n";
+	    		if(item.getPrice()>0.0) {
+	    			countPrice++;
+	    			totalPrice+= item.getPrice();
+	    			// assign the first valid item to MIN or compare the item of MIN and in the result list 
+	    			if(minItem == null || minItem.getPrice()>item.getPrice()) {
+	    				minItem = item;
+	    				labelMin.setOnAction(new EventHandler<ActionEvent>() {
+	    					@Override
+	    					public void handle(ActionEvent e) {
+	    						hostService.showDocument(item.getUrl());
+	    					}
+	    				});
+	    			}
+	    			
+	    			// assign the first valid item to DATE or compare the item of DATE and in the result list
+	    			/*if(lastDate == null || lastDate.getDate().before(item.getDate())){
+	    				lastDate = item;
+	    				labelLatest.setOnAction(new EventHandler<ActionEvent>() {
+	    					@Override
+	    					public void handle(ActionEvent e) {
+	    						hostService.showDocument(item.getUrl());
+	    					}
+    				}
+	    				*/
+	    		}
+	    	}
+	    	textAreaConsole.setText(output);
+	    	labelPrice.setText(Double.toString(totalPrice/countPrice));
+	    	labelMin.setText(Double.toString(minItem.getPrice()));
+    	}
     }
     
     @FXML
@@ -153,16 +208,6 @@ public class Controller {
     	alert.setHeaderText("Team Information: ");
     	alert.setContentText("Name: \tStudent ID: \tGithub account: \nHo Wai Kin\twkhoae\tjohnnyn2\nFung Hing Lun\thlfungad\tvictor0362\nHo Tsz Kiu\ttkhoad\tsarahtkho");
     	alert.showAndWait();
-    }
-    
-    @FXML
-    private void actionLatest() {
-    	
-    }
-
-    @FXML
-    private void actionMinPrice() {
-    	
     }
 }
 
