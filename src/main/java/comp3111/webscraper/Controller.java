@@ -17,6 +17,7 @@ import javafx.scene.control.MenuItem;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.ArrayList;
 
 import javafx.application.*;
 
@@ -57,6 +58,8 @@ public class Controller {
     
     private List<Item> lastResult;
     
+    private List<Item> newResult;
+    
     /**
      * Default controller
      */
@@ -74,7 +77,12 @@ public class Controller {
     	labelCount.setText("<total>");
     	labelPrice.setText("<AvgPrice>");
     	labelMin.setText("<Lowest>");
+    	labelMin.setOnAction(null);
     	labelLatest.setText("<Latest>");
+    	labelLatest.setOnAction(null);
+    	lastResult = new ArrayList<Item>();
+    	newResult = new ArrayList<Item>();
+    	textFieldKeyword.setText("");
     }
     
     public void setHostServices(HostServices hostServices) {
@@ -89,7 +97,14 @@ public class Controller {
     	lastSearch.setDisable(false);
     	System.out.println("actionSearch: " + textFieldKeyword.getText());
     	List<Item> result = scraper.scrape(textFieldKeyword.getText());
-    	lastResult.addAll(result);
+    	
+    	
+    	if(!newResult.isEmpty()) {
+    		lastResult.clear();
+    		lastResult.addAll(newResult);
+    		newResult.clear();
+    	}
+    	
     	String output = "";
     	for (Item item : result) {
     		output += item.getTitle() + "\t" + item.getPrice() + "\t" + item.getUrl() + "\n";
@@ -131,7 +146,7 @@ public class Controller {
 	    				*/
 	    		}
 	    	}
-	    	
+	    	newResult.addAll(result);
 	    	labelPrice.setText(Double.toString(totalPrice/countPrice));
 	    	labelMin.setText(Double.toString(minItem.getPrice()));
 	    	//labelLatest.setText(lastDate.getStringDate());
@@ -151,16 +166,6 @@ public class Controller {
     private void actionNew() {
     	lastSearch.setDisable(true);
     	System.out.println("actionNew");
-    }
-    @FXML
-    private void actionQuit() {
-    	Platform.exit();
-    	System.exit(0);
-    }
-
-    @FXML
-    private void actionClose() {
-    	initialize();
     	if(lastResult.size()!=0) {
 	    	String output = "";
 	    	// calculate the avg price
@@ -183,8 +188,8 @@ public class Controller {
 	    				});
 	    			}
 	    			
-	    			// assign the first valid item to DATE or compare the item of DATE and in the result list
-	    			/*if(lastDate == null || lastDate.getDate().before(item.getDate())){
+	    			/*// assign the first valid item to DATE or compare the item of DATE and in the result list
+	    			if(lastDate == null || lastDate.getDate().before(item.getDate())){
 	    				lastDate = item;
 	    				labelLatest.setOnAction(new EventHandler<ActionEvent>() {
 	    					@Override
@@ -198,7 +203,20 @@ public class Controller {
 	    	textAreaConsole.setText(output);
 	    	labelPrice.setText(Double.toString(totalPrice/countPrice));
 	    	labelMin.setText(Double.toString(minItem.getPrice()));
+    	} else {
+    		System.out.println("no previous result");
+    		initialize();
     	}
+    }
+    @FXML
+    private void actionQuit() {
+    	Platform.exit();
+    	System.exit(0);
+    }
+
+    @FXML
+    private void actionClose() {
+    	initialize();
     }
     
     @FXML
