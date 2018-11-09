@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Controller.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">COMP3111_project</a> &gt; <a href="index.source.html" class="el_package">comp3111.webscraper</a> &gt; <span class="el_source">Controller.java</span></div><h1>Controller.java</h1><pre class="source lang-java linenums">/**
+ * 
+ */
+package comp3111.webscraper;
+
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.Hyperlink;
+import java.util.List;
+
+//TODO i added these
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+
+
+/**
+ * 
+ * @author kevinw
+ *
+ *
+ * Controller class that manage GUI interaction. Please see document about JavaFX for details.
+ * 
+ */
+public class Controller {
+
+    @FXML 
+    private Label labelCount; 
+
+    @FXML 
+    private Label labelPrice; 
+
+    @FXML 
+    private Hyperlink labelMin; 
+
+    @FXML 
+    private Hyperlink labelLatest; 
+
+    @FXML
+    private TextField textFieldKeyword;
+    
+    @FXML
+    private TextArea textAreaConsole;
+    
+    private WebScraper scraper;
+    
+    
+    //TODO i added these
+    @FXML
+    private TableView&lt;Item&gt; table;
+    
+    @FXML
+    private TableColumn titleCol;
+    
+    @FXML
+    private TableColumn priceCol;
+    
+    @FXML
+    private TableColumn urlCol;
+    
+    @FXML
+    private TableColumn dateCol;
+    
+    //
+    
+    /**
+     * Default controller
+     */
+<span class="nc" id="L71">    public Controller() {</span>
+<span class="nc" id="L72">    	scraper = new WebScraper();</span>
+<span class="nc" id="L73">    }</span>
+
+    /**
+     * Default initializer. It is empty.
+     */
+    @FXML
+    private void initialize() {
+    	
+<span class="nc" id="L81">    }</span>
+    
+    /**
+     * Called when the search button is pressed.
+     */
+    @FXML
+    private void actionSearch() {
+<span class="nc" id="L88">    	System.out.println(&quot;actionSearch: &quot; + textFieldKeyword.getText());</span>
+<span class="nc" id="L89">    	List&lt;Item&gt; result = scraper.scrape(textFieldKeyword.getText());</span>
+<span class="nc" id="L90">    	String output = &quot;&quot;;</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">    	for (Item item : result) {</span>
+<span class="nc" id="L92">    		output += item.getTitle() + &quot;\t&quot; + item.getPrice() + &quot;\t&quot; + item.getUrl() + &quot;\n&quot;;</span>
+<span class="nc" id="L93">    	}</span>
+<span class="nc" id="L94">    	textAreaConsole.setText(output);</span>
+    	
+    	//TODO (i added sth here)
+    	//scraper.displayTable(/*col,col,col,col???*/);
+    	
+    	//
+<span class="nc" id="L100">    }</span>
+    
+    /**
+     * Called when the new button is pressed. Very dummy action - print something in the command prompt.
+     */
+    @FXML
+    private void actionNew() {
+<span class="nc" id="L107">    	System.out.println(&quot;actionNew&quot;);</span>
+<span class="nc" id="L108">    }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

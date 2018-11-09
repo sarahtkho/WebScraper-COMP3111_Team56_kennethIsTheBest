@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WebScraper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">COMP3111_project</a> &gt; <a href="index.source.html" class="el_package">comp3111.webscraper</a> &gt; <span class="el_source">WebScraper.java</span></div><h1>WebScraper.java</h1><pre class="source lang-java linenums">package comp3111.webscraper;
+
+import java.net.URLEncoder;
+import java.util.List;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import java.util.Vector;
+
+
+/**
+ * WebScraper provide a sample code that scrape web content. After it is constructed, you can call the method scrape with a keyword, 
+ * the client will go to the default url and parse the page by looking at the HTML DOM.  
+ * &lt;br/&gt;
+ * In this particular sample code, it access to craigslist.org. You can directly search on an entry by typing the URL
+ * &lt;br/&gt;
+ * https://newyork.craigslist.org/search/sss?sort=rel&amp;amp;query=KEYWORD
+ *  &lt;br/&gt;
+ * where KEYWORD is the keyword you want to search.
+ * &lt;br/&gt;
+ * Assume you are working on Chrome, paste the url into your browser and press F12 to load the source code of the HTML. You might be freak
+ * out if you have never seen a HTML source code before. Keep calm and move on. Press Ctrl-Shift-C (or CMD-Shift-C if you got a mac) and move your
+ * mouse cursor around, different part of the HTML code and the corresponding the HTML objects will be highlighted. Explore your HTML page from
+ * body &amp;rarr; section class=&quot;page-container&quot; &amp;rarr; form id=&quot;searchform&quot; &amp;rarr; div class=&quot;content&quot; &amp;rarr; ul class=&quot;rows&quot; &amp;rarr; any one of the multiple 
+ * li class=&quot;result-row&quot; &amp;rarr; p class=&quot;result-info&quot;. You might see something like this:
+ * &lt;br/&gt;
+ * &lt;pre&gt;
+ * {@code
+ *    &lt;p class=&quot;result-info&quot;&gt;
+ *        &lt;span class=&quot;icon icon-star&quot; role=&quot;button&quot; title=&quot;save this post in your favorites list&quot;&gt;
+ *           &lt;span class=&quot;screen-reader-text&quot;&gt;favorite this post&lt;/span&gt;
+ *       &lt;/span&gt;
+ *       &lt;time class=&quot;result-date&quot; datetime=&quot;2018-06-21 01:58&quot; title=&quot;Thu 21 Jun 01:58:44 AM&quot;&gt;Jun 21&lt;/time&gt;
+ *       &lt;a href=&quot;https://newyork.craigslist.org/que/clt/d/green-star-polyp-gsp-on-rock/6596253604.html&quot; data-id=&quot;6596253604&quot; class=&quot;result-title hdrlnk&quot;&gt;Green Star Polyp GSP on a rock frag&lt;/a&gt;
+ *       &lt;span class=&quot;result-meta&quot;&gt;
+ *               &lt;span class=&quot;result-price&quot;&gt;$15&lt;/span&gt;
+ *               &lt;span class=&quot;result-tags&quot;&gt;
+ *                   pic
+ *                   &lt;span class=&quot;maptag&quot; data-pid=&quot;6596253604&quot;&gt;map&lt;/span&gt;
+ *               &lt;/span&gt;
+ *               &lt;span class=&quot;banish icon icon-trash&quot; role=&quot;button&quot;&gt;
+ *                   &lt;span class=&quot;screen-reader-text&quot;&gt;hide this posting&lt;/span&gt;
+ *               &lt;/span&gt;
+ *           &lt;span class=&quot;unbanish icon icon-trash red&quot; role=&quot;button&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;
+ *           &lt;a href=&quot;#&quot; class=&quot;restore-link&quot;&gt;
+ *               &lt;span class=&quot;restore-narrow-text&quot;&gt;restore&lt;/span&gt;
+ *               &lt;span class=&quot;restore-wide-text&quot;&gt;restore this posting&lt;/span&gt;
+ *           &lt;/a&gt;
+ *       &lt;/span&gt;
+ *   &lt;/p&gt;
+ *}
+ *&lt;/pre&gt;
+ * &lt;br/&gt;
+ * The code 
+ * &lt;pre&gt;
+ * {@code
+ * List&lt;?&gt; items = (List&lt;?&gt;) page.getByXPath(&quot;//li[@class='result-row']&quot;);
+ * }
+ * &lt;/pre&gt;
+ * extracts all result-row and stores the corresponding HTML elements to a list called items. Later in the loop it extracts the anchor tag 
+ * &amp;lsaquo; a &amp;rsaquo; to retrieve the display text (by .asText()) and the link (by .getHrefAttribute()). It also extracts  
+ * 
+ *
+ */
+public class WebScraper {
+
+	private static final String DEFAULT_URL = &quot;https://newyork.craigslist.org/&quot;;
+	private WebClient client;
+
+	/**
+	 * Default Constructor 
+	 */
+<span class="nc" id="L75">	public WebScraper() {</span>
+<span class="nc" id="L76">		client = new WebClient();</span>
+<span class="nc" id="L77">		client.getOptions().setCssEnabled(false);</span>
+<span class="nc" id="L78">		client.getOptions().setJavaScriptEnabled(false);</span>
+<span class="nc" id="L79">	}</span>
+
+	/**
+	 * The only method implemented in this class, to scrape web content from the craigslist
+	 * 
+	 * @param keyword - the keyword you want to search
+	 * @return A list of Item that has found. A zero size list is return if nothing is found. Null if any exception (e.g. no connectivity)
+	 */
+	public List&lt;Item&gt; scrape(String keyword) {
+
+		try {
+<span class="nc" id="L90">			String searchUrl = DEFAULT_URL + &quot;search/sss?sort=rel&amp;query=&quot; + URLEncoder.encode(keyword, &quot;UTF-8&quot;);</span>
+<span class="nc" id="L91">			HtmlPage page = client.getPage(searchUrl);</span>
+
+			
+<span class="nc" id="L94">			List&lt;?&gt; items = (List&lt;?&gt;) page.getByXPath(&quot;//li[@class='result-row']&quot;);</span>
+			
+<span class="nc" id="L96">			Vector&lt;Item&gt; result = new Vector&lt;Item&gt;();</span>
+
+<span class="nc bnc" id="L98" title="All 2 branches missed.">			for (int i = 0; i &lt; items.size(); i++) {</span>
+<span class="nc" id="L99">				HtmlElement htmlItem = (HtmlElement) items.get(i);</span>
+<span class="nc" id="L100">				HtmlAnchor itemAnchor = ((HtmlAnchor) htmlItem.getFirstByXPath(&quot;.//p[@class='result-info']/a&quot;));</span>
+<span class="nc" id="L101">				HtmlElement spanPrice = ((HtmlElement) htmlItem.getFirstByXPath(&quot;.//a/span[@class='result-price']&quot;));</span>
+
+				// It is possible that an item doesn't have any price, we set the price to 0.0
+				// in this case
+<span class="nc bnc" id="L105" title="All 2 branches missed.">				String itemPrice = spanPrice == null ? &quot;0.0&quot; : spanPrice.asText();</span>
+
+<span class="nc" id="L107">				Item item = new Item();</span>
+<span class="nc" id="L108">				item.setTitle(itemAnchor.asText());</span>
+<span class="nc" id="L109">				item.setUrl(DEFAULT_URL + itemAnchor.getHrefAttribute());</span>
+
+<span class="nc" id="L111">				item.setPrice(new Double(itemPrice.replace(&quot;$&quot;, &quot;&quot;)));</span>
+
+<span class="nc" id="L113">				result.add(item);</span>
+			}
+<span class="nc" id="L115">			client.close();</span>
+<span class="nc" id="L116">			return result;</span>
+<span class="nc" id="L117">		} catch (Exception e) {</span>
+<span class="nc" id="L118">			System.out.println(e);</span>
+		}
+<span class="nc" id="L120">		return null;</span>
+	}
+	
+	//TODO Task 4 (displayTable())
+<span class="nc" id="L124">	public void displayTable() {}</span>
+<span class="nc" id="L125">	public void sortTable(/*afds*/) {}</span>
+	
+	//TODO Task 5 (refine)
+<span class="nc" id="L128">	public void refine() {}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
