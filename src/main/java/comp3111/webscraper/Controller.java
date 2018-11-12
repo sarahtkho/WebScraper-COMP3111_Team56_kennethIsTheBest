@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import javafx.application.*;
+import java.text.DecimalFormat;
 
 /**
  * 
@@ -92,15 +93,15 @@ public class Controller {
     /**
      * Called when the search button is pressed.
      */
-    
-    private void summarizing(List<?> listItem) {
+    @FXML
+    private void summarizing(List<Item> listItem) {
     	String output = "";
     	// calculate the avg price
     	int countPrice = 0;
     	double totalPrice = 0.0;
     	Item minItem = null, lastDate = null;
-    	for (Item item : lastResult) {
-    		output += item.getTitle() + "\t" + item.getPrice() + "\t" + item.getUrl() + "\n";
+    	for (Item item : listItem) {
+    		output += item.getTitle() + "\t" + item.getPrice() + "\t" + item.getUrl() +"\t"+item.getStringDate()+"\n";
     		if(item.getPrice()>0.0) {
     			countPrice++;
     			totalPrice+= item.getPrice();
@@ -115,7 +116,7 @@ public class Controller {
     				});
     			}
     			
-    			/*// assign the first valid item to DATE or compare the item of DATE and in the result list
+    			// assign the first valid item to DATE or compare the item of DATE and in the result list
     			if(lastDate == null || lastDate.getDate().before(item.getDate())){
     				lastDate = item;
     				labelLatest.setOnAction(new EventHandler<ActionEvent>() {
@@ -123,15 +124,18 @@ public class Controller {
     					public void handle(ActionEvent e) {
     						hostService.showDocument(item.getUrl());
     					}
-				}
-    				*/
+    				});
+    			}
+    				
     		}
     	}
     	labelCount.setText(Integer.toString(listItem.size()));
     	textAreaConsole.setText(output);
-    	labelPrice.setText(Double.toString(totalPrice/countPrice));
+    	DecimalFormat df = new DecimalFormat("#.00");
+    	labelPrice.setText(df.format(totalPrice/countPrice));
+    	System.out.println("finish summarize");
     	labelMin.setText(Double.toString(minItem.getPrice()));
-    	//labelLatest.setText(lastDate.getStringDate());
+    	labelLatest.setText(lastDate.getStringDate());
     }
     
     @FXML
