@@ -126,6 +126,7 @@ public class WebScraper {
 				numResults++;
 			}
 			numPage++;
+			
 			//Feature 3 Handle pagination
 			try {
 				int temp=2;
@@ -195,8 +196,6 @@ public class WebScraper {
 				numResults++;
 			}
 			
-			
-			
 			//Sort the items
 			Collections.sort(result);
 			client.close();
@@ -206,9 +205,11 @@ public class WebScraper {
 		}
 		return null;
 	}
+	
 	public int getNumPage() {
 		return numPage;
 	}
+	
 	public int getNumResults() {
 		return numResults;
 	}
