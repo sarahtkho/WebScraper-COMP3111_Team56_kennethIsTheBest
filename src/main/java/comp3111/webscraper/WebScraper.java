@@ -111,7 +111,8 @@ public class WebScraper {
 				HtmlElement htmlItem = (HtmlElement) items.get(i);
 				HtmlAnchor itemAnchor = ((HtmlAnchor) htmlItem.getFirstByXPath(".//p[@class='result-info']/a"));
 				HtmlElement spanPrice = ((HtmlElement) htmlItem.getFirstByXPath(".//a/span[@class='result-price']"));
-				HtmlElement postdate = ((HtmlElement) htmlItem.getFirstByXPath(".//p[@class='result-info']/time[@class='result-date']"));
+		//		HtmlElement postdate = ((HtmlElement) htmlItem.getFirstByXPath(".//p[@class='result-info']/time[@class='result-date']"));
+				HtmlElement postdate = (HtmlElement) htmlItem.getFirstByXPath(".//time");
 				// It is possible that an item doesn't have any price, we set the price to 0.0
 				// in this case
 				String itemPrice = spanPrice == null ? "0.0" : spanPrice.asText();
@@ -121,7 +122,7 @@ public class WebScraper {
 				item.setUrl(DEFAULT_URL + itemAnchor.getHrefAttribute());
 					
 				item.setPrice(new Double(itemPrice.replace("$", "")));
-				item.setPostdate(postdate.asText());
+				item.setPostdate(postdate.getAttribute("datetime"));
 				result.add(item);
 				numResults++;
 			}
@@ -140,7 +141,8 @@ public class WebScraper {
 						HtmlElement htmlItem = (HtmlElement) items_crai_pagination.get(i);
 						HtmlAnchor itemAnchor = ((HtmlAnchor) htmlItem.getFirstByXPath(".//p[@class='result-info']/a"));
 						HtmlElement spanPrice = ((HtmlElement) htmlItem.getFirstByXPath(".//a/span[@class='result-price']"));
-						HtmlElement postdate = ((HtmlElement) htmlItem.getFirstByXPath(".//p[@class='result-info']/time[@class='result-date']"));
+						//HtmlElement postdate = ((HtmlElement) htmlItem.getFirstByXPath(".//p[@class='result-info']/time[@class='result-date']"));
+						HtmlElement postdate = (HtmlElement) htmlItem.getFirstByXPath(".//time");
 						// It is possible that an item doesn't have any price, we set the price to 0.0
 						// in this case
 						String itemPrice = spanPrice == null ? "0.0" : spanPrice.asText();
@@ -150,7 +152,7 @@ public class WebScraper {
 						item.setUrl(DEFAULT_URL + itemAnchor.getHrefAttribute());
 							
 						item.setPrice(new Double(itemPrice.replace("$", "")));
-						item.setPostdate(postdate.asText());
+						item.setPostdate(postdate.getAttribute("datetime"));
 						result.add(item);
 						numResults++;
 					}
