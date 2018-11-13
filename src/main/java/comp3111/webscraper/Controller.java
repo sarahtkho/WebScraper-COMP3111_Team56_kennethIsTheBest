@@ -6,17 +6,24 @@ package comp3111.webscraper;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Hyperlink;
+
+import java.util.Calendar;
 import java.util.List;
 
 //TODO Sarah added these
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.application.HostServices;
 import javafx.collections.FXCollections;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 import javafx.scene.control.Hyperlink;
 //
 
@@ -32,7 +39,9 @@ import javafx.scene.control.Hyperlink;
  */
 public class Controller {
 
-    @FXML	
+    public static HostServices hostServices;
+
+	@FXML	
     private Label labelCount; 
 
     @FXML	
@@ -57,16 +66,16 @@ public class Controller {
     private TableView<Item> table;
     
     @FXML	
-    private TableColumn titleCol;
+    private TableColumn<TableView<Item>, String> titleCol;
     
     @FXML	
-    private TableColumn priceCol;
+    private TableColumn<TableView<Item>, Double> priceCol;
     
     @FXML	
-    private TableColumn urlCol;
+    private TableColumn<TableView<Item>, Hyperlink> urlCol;
     
     @FXML	
-    private TableColumn dateCol;
+    private TableColumn<TableView<Item>, Calendar> dateCol;
     //
     
     /**
@@ -100,9 +109,11 @@ public class Controller {
     	//TODO (Sarah added sth here)
     	ObservableList<Item> l = FXCollections.observableList(result);
     	table.setItems(l);
-    	titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
-    	priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
-    	urlCol.setCellValueFactory(new PropertyValueFactory<>("url"));
+    	titleCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, String>("title"));
+    	priceCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Double>("price"));
+    	urlCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Hyperlink>("link"));
+    	urlCol.setCellFactory(new HyperlinkCell());
+    	dateCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Calendar>("postedDate"));
     	//
     }
     
@@ -112,6 +123,30 @@ public class Controller {
     @FXML
     private void actionNew() {
     	System.out.println("actionNew");
+    }
+    
+    public class HyperlinkCell implements Callback<TableColumn<TableView<Item>, Hyperlink>, TableCell<TableView<Item>, Hyperlink>> {
+    	public HostServices getHostServices() {
+    		return hostServices;
+    	}
+    	@Override
+    	public TableCell<TableView<Item>, Hyperlink> call(TableColumn<TableView<Item>, Hyperlink> arg) {
+    		TableCell<TableView<Item>, Hyperlink> cell = new TableCell<TableView<Item>, Hyperlink>() {
+    			@Override
+    			protected void updateItem(Hyperlink item, boolean empty) {
+    				setGraphic(empty ? null : item);
+    				if (!empty)
+    				item.setOnAction(new EventHandler<ActionEvent>() {
+    					@Override
+    					public void handle(ActionEvent e) {
+    						System.out.println("handle");
+    						hostServices.showDocument(item.toString());
+    					}
+    				});
+    			}
+    		};
+    		return cell;
+    	}
     }
 }
 

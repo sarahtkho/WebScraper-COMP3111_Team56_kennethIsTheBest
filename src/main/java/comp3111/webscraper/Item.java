@@ -1,11 +1,15 @@
 package comp3111.webscraper;
 
+import java.util.Calendar;
 
+import javafx.scene.control.Hyperlink;
 
 public class Item {
 	private String title ; 
 	private double price ;
 	private String url ;
+	private Calendar postedDate;
+	private Hyperlink link;
 	
 	public String getTitle() {
 		return title;
@@ -25,6 +29,11 @@ public class Item {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
+	public void setLink() {
+		link = new Hyperlink(url);
+	}
+	public Hyperlink getLink() {
+		return link;
+	}
 
 }
