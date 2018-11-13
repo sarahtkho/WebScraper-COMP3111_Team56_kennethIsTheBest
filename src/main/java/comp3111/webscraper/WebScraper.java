@@ -1,9 +1,11 @@
 package comp3111.webscraper;
 
 import java.net.URLEncoder;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;// imported exception class for feature 3
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -70,12 +72,34 @@ import java.util.Vector;
 public class WebScraper {
 
 	private static final String DEFAULT_URL = "https://newyork.craigslist.org/";
+	
 	// Feature 2 Preloved will be used as the second selling portal
 	private static final String PRELOVED_URL = "https://www.preloved.co.uk/";
+	
 	// Feature 3 Record # of pages being searched
-	private int numPage;
+	private int numPage_craigslist;
+	
+	// Feature 3 Record # of pages being searched
+	private int numPage_preloved;
+	
 	// Feature 3 Record # of search results
 	private int numResults;
+	
+
+	//Contains special characters
+	private String specialCharacters[] = {
+	Pattern.quote("%"), Pattern.quote("/"), Pattern.quote("?"), Pattern.quote("'"), Pattern.quote(";"), Pattern.quote(":"), Pattern.quote("["),
+	Pattern.quote("]"), Pattern.quote("{"), Pattern.quote("}"), Pattern.quote("|"), Pattern.quote("\\"), Pattern.quote("`"), Pattern.quote("!"), Pattern.quote("@"), Pattern.quote("#"), Pattern.quote("$"),
+	Pattern.quote(","), Pattern.quote("^"), Pattern.quote("&"), Pattern.quote("("), Pattern.quote(")"), Pattern.quote("="), Pattern.quote("+"), Pattern.quote(" ")
+	};
+	
+	//contains corresponding url characters for special characters
+	private String urlCharacters[] = {
+	"%25", "%2F", "%3F", "%27", "%3B", "%3A", "%5B", 
+	"%5D", "%7B", "%7D","%7C", "%5C", "%60", "%21", "%40", "%23", "%24",
+	"%2C", "%5E", "&26", "%28", "%29", "%3D", "%2B", "+"
+	};
+	
 	private WebClient client;
 
 	/**
@@ -85,7 +109,8 @@ public class WebScraper {
 		client = new WebClient();
 		client.getOptions().setCssEnabled(false);
 		client.getOptions().setJavaScriptEnabled(false);
-		numPage = 0;
+		numPage_craigslist = 0;
+		numPage_preloved = 0;
 		numResults = 0;
 	}
 
@@ -96,10 +121,15 @@ public class WebScraper {
 	 * @return A list of Item that has found. A zero size list is return if nothing is found. Null if any exception (e.g. no connectivity)
 	 */
 	public List<Item> scrape(String keyword) {
-		numPage=0;
+		numPage_craigslist=0;
+		numPage_preloved=0;
 		numResults = 0;
 		try {
-			String searchUrl = DEFAULT_URL + "search/sss?sort=rel&query=" + URLEncoder.encode(keyword, "UTF-8");
+			
+			//Original source code to scrape one page of items in craigslist
+			String formattedKeyword = formatKeyword(keyword);
+
+			String searchUrl = DEFAULT_URL + "search/sss?sort=rel&query=" + URLEncoder.encode(formattedKeyword, "UTF-8");
 			HtmlPage page = client.getPage(searchUrl);
 
 			
@@ -126,13 +156,14 @@ public class WebScraper {
 				result.add(item);
 				numResults++;
 			}
-			numPage++;
+			if(items.size() > 0)
+				numPage_craigslist++;
 			
 			//Feature 3 Handle pagination
 			try {
 				int temp=2;
 				int numItems=120;
-				String searchUrl_pagination = DEFAULT_URL + "search/sss?s="+ Integer.toString(numItems) +"&sort=rel&query=" + URLEncoder.encode(keyword, "UTF-8");
+				String searchUrl_pagination = DEFAULT_URL + "search/sss?s="+ Integer.toString(numItems) +"&sort=rel&query=" + URLEncoder.encode(formattedKeyword, "UTF-8");
 				HtmlPage page_crai_pagination = client.getPage(searchUrl_pagination);
 				for(int p=0;p<3;p++) {
 			//	while(page_crai_pagination!=null) {
@@ -158,15 +189,16 @@ public class WebScraper {
 					}
 					numItems = temp*numItems;
 					temp++;
-					numPage++;
-					searchUrl_pagination = DEFAULT_URL + "search/sss?s="+ Integer.toString(numItems) +"&sort=rel&query=" + URLEncoder.encode(keyword, "UTF-8");
+					if(items_crai_pagination.size() > 0)
+						numPage_craigslist++;
+					searchUrl_pagination = DEFAULT_URL + "search/sss?s="+ Integer.toString(numItems) +"&sort=rel&query=" + URLEncoder.encode(formattedKeyword, "UTF-8");
 					page_crai_pagination = client.getPage(searchUrl_pagination);
 				}
 				
 			}catch(FailingHttpStatusCodeException e) {} 
 			
 			//Feature 2 scrape data from Preloved
-			String search_Url_Preloved = PRELOVED_URL + "search?keyword=" + URLEncoder.encode(keyword, "UTF-8");
+			String search_Url_Preloved = PRELOVED_URL + "search?keyword=" + URLEncoder.encode(formattedKeyword, "UTF-8");
 			HtmlPage page_preloved = client.getPage(search_Url_Preloved);
 			List<?> items_preloved = (List<?>) page_preloved.getByXPath("//li[@class='search-result']");
 			for (int i=0;i<items_preloved.size();i++) {
@@ -197,6 +229,8 @@ public class WebScraper {
 				result.add(item);
 				numResults++;
 			}
+			if(items_preloved.size() > 0)
+				numPage_preloved++;
 			
 			//Sort the items
 			Collections.sort(result);
@@ -207,11 +241,29 @@ public class WebScraper {
 		}
 		return null;
 	}
-	
-	public int getNumPage() {
-		return numPage;
+	/**
+	 * Check whether the keyword contains special characters and format the keyword if it contains any special character  
+	 * 
+	 * @param keyword - the keyword you want to search
+	 * @return - return the formatted keyword that will be entered to the url
+	 * 
+	 **/
+	public String formatKeyword(String keyword) {
+		String formattedKeyword = keyword;
+		for(int i=0;i<specialCharacters.length;i++) {
+			formattedKeyword.replaceAll(specialCharacters[i], urlCharacters[i]);
+		}
+		return formattedKeyword;
 	}
 	
+	public int getNumPage(String portal) {
+		if(portal=="craigslist")
+			return numPage_craigslist;
+		else if(portal=="preloved")
+			return numPage_preloved;
+		else return 0;
+	}
+		
 	public int getNumResults() {
 		return numResults;
 	}
