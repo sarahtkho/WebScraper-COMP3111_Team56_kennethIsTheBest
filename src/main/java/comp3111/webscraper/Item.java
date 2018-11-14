@@ -34,12 +34,14 @@ public class Item {
 		return postedDate;
 	}
 	public String getStringDate() {
-		return postedDate.get(Calendar.YEAR) + "-" + postedDate.get(Calendar.MONTH) + "-" + postedDate.get(Calendar.DAY_OF_MONTH)+" "+postedDate.get(Calendar.HOUR)+":"+postedDate.get(Calendar.MINUTE);
+		return postedDate.get(Calendar.YEAR) + "-" + (postedDate.get(Calendar.MONTH)+1) + "-" + postedDate.get(Calendar.DAY_OF_MONTH)+" "+postedDate.get(Calendar.HOUR)+":"+postedDate.get(Calendar.MINUTE);
+		// Month get a +1 for MONTH start at 0; 0 == JAN
 	}
 	public void setDate(String searchDate) {
+		postedDate.clear();
 		if(!searchDate.contains("ago")) {
 			this.postedDate.set(Integer.parseInt(searchDate.substring(0,searchDate.indexOf("-"))),
-				Integer.parseInt(searchDate.substring(searchDate.indexOf("-")+1, searchDate.lastIndexOf("-"))),
+				Integer.parseInt(searchDate.substring(searchDate.indexOf("-")+1, searchDate.lastIndexOf("-")))-1,	// -1 for month is start at 0 -> 0 == JANUARY
 				Integer.parseInt(searchDate.substring(searchDate.lastIndexOf("-")+1,searchDate.lastIndexOf("-")+3 )),
 				Integer.parseInt(searchDate.substring(searchDate.indexOf(":")-2,searchDate.indexOf(":"))),
 				Integer.parseInt(searchDate.substring(searchDate.indexOf(":")+1, searchDate.indexOf(":")+3)));
@@ -47,9 +49,9 @@ public class Item {
 			this.postedDate = Calendar.getInstance();
 			if(searchDate.contains("hour"))
 				postedDate.add(Calendar.HOUR, Integer.parseInt(searchDate.substring(0, searchDate.indexOf(" ")))*-1);
-			else if(searchDate.contains("Day"))
+			else if(searchDate.contains("day"))
 				postedDate.add(Calendar.DAY_OF_MONTH, Integer.parseInt(searchDate.substring(0, searchDate.indexOf(" ")))*-1);
-			else if (searchDate.contains("minute"))
+			else //if (searchDate.contains("minute"))
 				postedDate.add(Calendar.MINUTE, Integer.parseInt(searchDate.substring(0, searchDate.indexOf(" ")))*-1);
 		}
 	}
