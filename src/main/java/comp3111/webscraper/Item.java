@@ -38,9 +38,7 @@ public class Item implements Comparable<Item>{
 			return 1;
 		else if(this.price < other.price)
 			return -1;
-		else if(this.url.contains("craigslist")) 
-			return -1;
 		else
-			return 1;
+			return 0;
 	}
 }
