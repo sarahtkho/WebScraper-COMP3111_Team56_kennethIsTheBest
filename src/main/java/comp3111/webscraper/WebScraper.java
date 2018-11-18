@@ -106,7 +106,7 @@ public class WebScraper {
 
 				Item item = new Item();
 				item.setTitle(itemAnchor.asText());
-				item.setUrl(DEFAULT_URL + itemAnchor.getHrefAttribute());
+				item.setUrl(/*DEFAULT_URL + */itemAnchor.getHrefAttribute());
 				item.setLink();
 				
 				item.setPrice(new Double(itemPrice.replace("$", "")));
@@ -120,12 +120,5 @@ public class WebScraper {
 		}
 		return null;
 	}
-	
-	//TODO Task 4 (displayTable())
-	public void displayTable() {}
-	public void sortTable(/*afds*/) {}
-	
-	//TODO Task 5 (refine)
-	public void refine() {}
 
 }

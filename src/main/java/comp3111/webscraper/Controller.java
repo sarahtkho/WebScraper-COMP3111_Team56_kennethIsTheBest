@@ -40,6 +40,10 @@ import javafx.scene.control.Hyperlink;
 public class Controller {
 
     public static HostServices hostServices;
+    
+    private List<Item> lastResult;
+    
+    private List<Item> newResult;
 
 	@FXML	
     private Label labelCount; 
@@ -90,7 +94,11 @@ public class Controller {
      */
     @FXML
     private void initialize() {
-    	
+    	table.getItems().clear();
+    }
+    
+    public void setHostServices(HostServices hostServices) {
+    	this.hostServices = hostServices;
     }
     
     /**
@@ -105,8 +113,14 @@ public class Controller {
     		output += item.getTitle() + "\t" + item.getPrice() + "\t" + item.getUrl() + "\n";
     	}
     	textAreaConsole.setText(output);
-    	
-    	//TODO (Sarah added sth here)
+    	table.getItems().clear();
+    	displayTable(result);
+    }
+    
+    /**
+     * Display the list of Items on table
+     */
+    private void displayTable(List<Item> result) {
     	ObservableList<Item> l = FXCollections.observableList(result);
     	table.setItems(l);
     	titleCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, String>("title"));
@@ -114,21 +128,34 @@ public class Controller {
     	urlCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Hyperlink>("link"));
     	urlCol.setCellFactory(new HyperlinkCell());
     	dateCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Calendar>("postedDate"));
-    	//
     }
     
     /**
-     * Called when the new button is pressed. Very dummy action - print something in the command prompt.
+     * Called when user requests last search result
      */
     @FXML
     private void actionNew() {
     	System.out.println("actionNew");
+    	if(lastResult.size()!=0)
+    		displayTable(lastResult);
     }
     
+    /**
+     * Called when user presses refine
+     */
+    @FXML
+    private void actionRefine() {
+    	System.out.println("actionRefine");
+
+    }
+    /**
+     * Class for tablecells that contain a hyperlink
+     */
     public class HyperlinkCell implements Callback<TableColumn<TableView<Item>, Hyperlink>, TableCell<TableView<Item>, Hyperlink>> {
     	public HostServices getHostServices() {
     		return hostServices;
     	}
+    	
     	@Override
     	public TableCell<TableView<Item>, Hyperlink> call(TableColumn<TableView<Item>, Hyperlink> arg) {
     		TableCell<TableView<Item>, Hyperlink> cell = new TableCell<TableView<Item>, Hyperlink>() {
@@ -139,8 +166,8 @@ public class Controller {
     				item.setOnAction(new EventHandler<ActionEvent>() {
     					@Override
     					public void handle(ActionEvent e) {
-    						System.out.println("handle");
-    						hostServices.showDocument(item.toString());
+    						System.out.println("handle"+item.getText());
+    						hostServices.showDocument(item.getText());
     					}
     				});
     			}

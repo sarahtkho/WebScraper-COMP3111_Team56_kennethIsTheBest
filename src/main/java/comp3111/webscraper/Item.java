@@ -35,5 +35,11 @@ public class Item {
 	public Hyperlink getLink() {
 		return link;
 	}
+	public Calendar getPostedDate() {
+		return postedDate;
+	}
+	public void setPostedDate(Calendar postedDate) {
+		this.postedDate = postedDate;
+	}
 
 }
