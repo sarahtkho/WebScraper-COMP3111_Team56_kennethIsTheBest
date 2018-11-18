@@ -3,9 +3,9 @@ package comp3111.webscraper;
 import java.net.URLEncoder;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Collections; //import Collections class for sorting the items 
 import java.util.List;
-import java.util.regex.Pattern;
+import java.util.regex.Pattern; // imported Pattern class from Regex for formatting special characters into regular expression
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;// imported exception class for feature 3
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -93,7 +93,7 @@ public class WebScraper {
 	Pattern.quote(","), Pattern.quote("^"), Pattern.quote("&"), Pattern.quote("("), Pattern.quote(")"), Pattern.quote("="), Pattern.quote("+"), Pattern.quote(" ")
 	};
 	
-	//contains corresponding url characters for special characters
+	//contains corresponding url mapping for special characters
 	private String urlCharacters[] = {
 	"%25", "%2F", "%3F", "%27", "%3B", "%3A", "%5B", 
 	"%5D", "%7B", "%7D","%7C", "%5C", "%60", "%21", "%40", "%23", "%24",
@@ -115,10 +115,11 @@ public class WebScraper {
 	}
 
 	/**
-	 * The only method implemented in this class, to scrape web content from the craigslist
+	 * The only method implemented in this class, to scrape web content from the craigslist and preloved
 	 * 
 	 * @param keyword - the keyword you want to search
 	 * @return A list of Item that has found. A zero size list is return if nothing is found. Null if any exception (e.g. no connectivity)
+	 * @exception FailingHttpStatusCodeException - being caught when the URL doesn't exist. If there is not nay pagination of a particular search, this exception occurs 
 	 */
 	public List<Item> scrape(String keyword) {
 		numPage_craigslist=0;
@@ -241,11 +242,12 @@ public class WebScraper {
 		}
 		return null;
 	}
+	
 	/**
 	 * Check whether the keyword contains special characters and format the keyword if it contains any special character  
 	 * 
 	 * @param keyword - the keyword you want to search
-	 * @return - return the formatted keyword that will be entered to the url
+	 * @return formattedKeyword - the formatted keyword that will be entered to the url
 	 * 
 	 **/
 	public String formatKeyword(String keyword) {
@@ -256,6 +258,11 @@ public class WebScraper {
 		return formattedKeyword;
 	}
 	
+	/**
+	 * 
+	 * @param portal
+	 * @return the number of pages that are scraped 
+	 */
 	public int getNumPage(String portal) {
 		if(portal=="craigslist")
 			return numPage_craigslist;
@@ -263,7 +270,11 @@ public class WebScraper {
 			return numPage_preloved;
 		else return 0;
 	}
-		
+	
+	/**
+	 * 
+	 * @return the number of items that are scraped
+	 */
 	public int getNumResults() {
 		return numResults;
 	}

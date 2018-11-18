@@ -1,6 +1,13 @@
 package comp3111.webscraper;
 
 
+ /** 
+  * @author Ho Wai Kin Johnny
+  * 
+  * Item contains the items information that are scraped from the selling portals, such as it's name, price, url and postdate
+  * It extends Comparable<Item> for comparing the price between items
+  *
+  */
 public class Item implements Comparable<Item>{
 	private String title ; 
 	private double price ;
@@ -31,6 +38,7 @@ public class Item implements Comparable<Item>{
 	public String getPostdate() {
 		return postdate;
 	}
+	
 	//Used to sort the Vector<Item> result
 	@Override
 	public int compareTo(Item other) {
