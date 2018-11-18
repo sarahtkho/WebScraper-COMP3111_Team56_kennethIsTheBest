@@ -2,11 +2,10 @@ package comp3111.webscraper;
 
 
  /** 
-  * @author Ho Wai Kin Johnny
-  * 
-  * Item contains the items information that are scraped from the selling portals, such as it's name, price, url and postdate
+  * Contains the items information that are scraped from the selling portals, such as it's name, price, url and postdate
   * It implements interface Comparable for comparing the price between items
-  *
+  * 
+  * @author Ho Wai Kin Johnny
   */
 public class Item implements Comparable<Item>{
 	private String title ; 
@@ -15,8 +14,15 @@ public class Item implements Comparable<Item>{
 	private String postdate;
 	
 	/**
+	 * Default constrcutor
+	 */
+	public Item(){
+		
+	}
+	
+	/**
 	 * Get item title
-	 * @return item title
+	 * @return Item title (e.g. iPhone 8 plus)
 	 */
 	public String getTitle() {
 		return title;
@@ -24,7 +30,7 @@ public class Item implements Comparable<Item>{
 	
 	/**
 	 * Set item title
-	 * @param title - Name of the item scraped from selling portals
+	 * @param title The name of the item scraped from selling portals (e.g. iPhone 8 plus)
 	 */
 	public void setTitle(String title) {
 		this.title = title;
@@ -32,7 +38,7 @@ public class Item implements Comparable<Item>{
 	
 	/**
 	 * Get item price
-	 * @return item price 
+	 * @return Item price (e.g. 530.5)
 	 */
 	public double getPrice() {
 		return price;
@@ -40,7 +46,7 @@ public class Item implements Comparable<Item>{
 	
 	/**
 	 * Set item price
-	 * @param price - Price of the item scraped from selling portals
+	 * @param price The price of the item scraped from selling portals (e.g. 530.5)
 	 */
 	public void setPrice(double price) {
 		this.price = price;
@@ -48,7 +54,7 @@ public class Item implements Comparable<Item>{
 	
 	/**
 	 * Get item url
-	 * @return item url
+	 * @return Item url (e.g. https://newyork.craigslist.org/https://newyork.craigslist.org/wch/mob/d/iphone-8-plus/6751819289.html)
 	 */
 	public String getUrl() {
 		return url;
@@ -56,7 +62,7 @@ public class Item implements Comparable<Item>{
 	
 	/**
 	 * Set item url
-	 * @param url - url of the item scraped from selling portals
+	 * @param url The url of the item scraped from selling portals (e.g. https://newyork.craigslist.org/https://newyork.craigslist.org/wch/mob/d/iphone-8-plus/6751819289.html)
 	 */
 	public void setUrl(String url) {
 		this.url = url;
@@ -64,7 +70,7 @@ public class Item implements Comparable<Item>{
 	
 	/**
 	 * Set item postdate
-	 * @param postdate - the date of the item being posted on the selling portal
+	 * @param postdate The date of the item being posted on the selling portal (e.g. 2018-11-18 00:24)
 	 */
 	public void setPostdate(String postdate) {
 		this.postdate = postdate;
@@ -72,7 +78,7 @@ public class Item implements Comparable<Item>{
 	
 	/**
 	 * Get item post date
-	 * @return postdate
+	 * @return The date of the item being posted on selling portal (e.g. 2018-11-18 00:24)
 	 */
 	public String getPostdate() {
 		return postdate;
@@ -80,7 +86,7 @@ public class Item implements Comparable<Item>{
 	
 	/**
 	 * Used to sort all items by price
-	 * @param other - another item in the result vector
+	 * @param other Another item in the result vector
 	 * @return 1, -1 or 0 to indicate the compare result
 	 */
 	@Override

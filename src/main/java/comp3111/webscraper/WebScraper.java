@@ -115,11 +115,11 @@ public class WebScraper {
 	}
 
 	/**
-	 * The only method implemented in this class, to scrape web content from the craigslist and preloved
+	 * Scrape web content from two selling portals, Craigslist and Preloved
 	 * 
-	 * @param keyword - the keyword you want to search
+	 * @param keyword The keyword entered by the user
 	 * @return A list of Item that has found. A zero size list is return if nothing is found. Null if any exception (e.g. no connectivity)
-	 * @exception FailingHttpStatusCodeException - being caught when the URL doesn't exist. If there is not nay pagination of a particular search, this exception occurs 
+	 * @exception FailingHttpStatusCodeException Being thrown when the URL doesn't exist. If there is not nay pagination of a particular search, this exception occurs 
 	 */
 	public List<Item> scrape(String keyword) {
 		numPage_craigslist=0;
@@ -246,8 +246,8 @@ public class WebScraper {
 	/**
 	 * Check whether the keyword contains special characters and format the keyword if it contains any special character  
 	 * 
-	 * @param keyword - the keyword you want to search
-	 * @return formattedKeyword - the formatted keyword that will be entered to the url
+	 * @param keyword The keyword you want to search
+	 * @return A formattedKeyword that will be entered to the url
 	 * 
 	 **/
 	public String formatKeyword(String keyword) {
@@ -259,9 +259,10 @@ public class WebScraper {
 	}
 	
 	/**
+	 * Get the number of pages being scraped
 	 * 
-	 * @param portal - name of the portal
-	 * @return the number of pages that are scraped 
+	 * @param portal The name of the portal
+	 * @return The number of pages that are scraped for a particular search
 	 */
 	public int getNumPage(String portal) {
 		if(portal=="craigslist")
@@ -272,8 +273,9 @@ public class WebScraper {
 	}
 	
 	/**
+	 * Get the number of items being scraped
 	 * 
-	 * @return the number of items that are scraped
+	 * @return The number of items that are scraped
 	 */
 	public int getNumResults() {
 		return numResults;
