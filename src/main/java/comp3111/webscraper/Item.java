@@ -5,7 +5,7 @@ package comp3111.webscraper;
   * @author Ho Wai Kin Johnny
   * 
   * Item contains the items information that are scraped from the selling portals, such as it's name, price, url and postdate
-  * It implements Comparable<Item> for comparing the price between items
+  * It implements interface Comparable for comparing the price between items
   *
   */
 public class Item implements Comparable<Item>{
@@ -24,7 +24,7 @@ public class Item implements Comparable<Item>{
 	
 	/**
 	 * Set item title
-	 * @param title
+	 * @param title - Name of the item scraped from selling portals
 	 */
 	public void setTitle(String title) {
 		this.title = title;
@@ -32,7 +32,7 @@ public class Item implements Comparable<Item>{
 	
 	/**
 	 * Get item price
-	 * @return item price
+	 * @return item price 
 	 */
 	public double getPrice() {
 		return price;
@@ -40,7 +40,7 @@ public class Item implements Comparable<Item>{
 	
 	/**
 	 * Set item price
-	 * @param price
+	 * @param price - Price of the item scraped from selling portals
 	 */
 	public void setPrice(double price) {
 		this.price = price;
@@ -56,7 +56,7 @@ public class Item implements Comparable<Item>{
 	
 	/**
 	 * Set item url
-	 * @param url
+	 * @param url - url of the item scraped from selling portals
 	 */
 	public void setUrl(String url) {
 		this.url = url;
@@ -64,7 +64,7 @@ public class Item implements Comparable<Item>{
 	
 	/**
 	 * Set item postdate
-	 * @param postdate
+	 * @param postdate - the date of the item being posted on the selling portal
 	 */
 	public void setPostdate(String postdate) {
 		this.postdate = postdate;
@@ -72,15 +72,15 @@ public class Item implements Comparable<Item>{
 	
 	/**
 	 * Get item post date
-	 * @return
+	 * @return postdate
 	 */
 	public String getPostdate() {
 		return postdate;
 	}
 	
 	/**
-	 * Used to sort the Vector<Item> result
-	 * @param other
+	 * Used to sort all items by price
+	 * @param other - another item in the result vector
 	 * @return 1, -1 or 0 to indicate the compare result
 	 */
 	@Override

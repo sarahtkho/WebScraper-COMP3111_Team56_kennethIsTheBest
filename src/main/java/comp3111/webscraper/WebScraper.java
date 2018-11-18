@@ -260,7 +260,7 @@ public class WebScraper {
 	
 	/**
 	 * 
-	 * @param portal
+	 * @param portal - name of the portal
 	 * @return the number of pages that are scraped 
 	 */
 	public int getNumPage(String portal) {
