@@ -9,7 +9,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import java.util.Vector;
 
-
 /**
  * WebScraper provide a sample code that scrape web content. After it is constructed, you can call the method scrape with a keyword, 
  * the client will go to the default url and parse the page by looking at the HTML DOM.  
@@ -99,6 +98,7 @@ public class WebScraper {
 				HtmlElement htmlItem = (HtmlElement) items.get(i);
 				HtmlAnchor itemAnchor = ((HtmlAnchor) htmlItem.getFirstByXPath(".//p[@class='result-info']/a"));
 				HtmlElement spanPrice = ((HtmlElement) htmlItem.getFirstByXPath(".//a/span[@class='result-price']"));
+				HtmlElement timeDate = ((HtmlElement) htmlItem.getFirstByXPath(".//time"));
 
 				// It is possible that an item doesn't have any price, we set the price to 0.0
 				// in this case
@@ -106,8 +106,9 @@ public class WebScraper {
 
 				Item item = new Item();
 				item.setTitle(itemAnchor.asText());
-				item.setUrl(DEFAULT_URL + itemAnchor.getHrefAttribute());
-
+				item.setUrl(itemAnchor.getHrefAttribute());
+				item.setDate(timeDate.getAttribute("datetime"));
+				
 				item.setPrice(new Double(itemPrice.replace("$", "")));
 
 				result.add(item);
