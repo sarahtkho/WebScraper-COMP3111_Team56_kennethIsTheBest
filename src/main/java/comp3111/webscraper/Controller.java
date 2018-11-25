@@ -11,7 +11,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+//<<<<<<< HEAD
 import javafx.scene.control.Button;
+//=======
+//>>>>>>> refs/remotes/origin/test_(2,3)
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 import javafx.scene.control.MenuItem;
@@ -22,6 +25,7 @@ import java.util.ArrayList;
 
 import javafx.application.*;
 import java.text.DecimalFormat;
+//<<<<<<< HEAD
 
 //TODO Sarah added these
 import javafx.scene.control.TableCell;
@@ -33,6 +37,8 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 //
+//=======
+//>>>>>>> refs/remotes/origin/test_(2,3)
 
 /**
  * 
@@ -44,67 +50,71 @@ import javafx.util.Callback;
  */
 public class Controller {
 
-    @FXML
-    private MenuItem lastSearch;
-	
+	@FXML
+	private MenuItem lastSearch;
+
 	@FXML 
-    private Label labelCount; 
+	private Label labelCount; 
 
-    @FXML	
-    private Label labelPrice; 
+	@FXML	
+	private Label labelPrice; 
 
-    @FXML	
-    private Hyperlink labelMin; 
+	@FXML	
+	private Hyperlink labelMin; 
 
-    @FXML	
-    private Hyperlink labelLatest; 
+	@FXML	
+	private Hyperlink labelLatest; 
 
-    @FXML	
-    private TextField textFieldKeyword;
-    
-    @FXML	
-    private TextArea textAreaConsole;
-    
-    private WebScraper scraper;
-    
-    private HostServices hostService;
-    
-    private List<Item> lastResult;
-    
-    private List<Item> newResult;
-    
-    //TODO Sarah added these
-    @FXML	
-    private TableView<Item> table;
-    
-    @FXML	
-    private TableColumn<TableView<Item>, String> titleCol;
-    
-    @FXML	
-    private TableColumn<TableView<Item>, Double> priceCol;
-    
-    @FXML	
-    private TableColumn<TableView<Item>, Hyperlink> urlCol;
-    
-    @FXML	
-    private TableColumn<TableView<Item>, Calendar> dateCol;
-    
-    @FXML
-    private Button refine;
-    //
-    
-    /**
-     * Default controller
-     */
-    public Controller() {
-    	scraper = new WebScraper();
-    }
+	@FXML	
+	private TextField textFieldKeyword;
 
-    /**
-     * Default initializer. It is empty.
-     */
-    @FXML
-    private void initialize() {
+	@FXML	
+	private TextArea textAreaConsole;
+
+	private WebScraper scraper;
+
+	private HostServices hostService;
+
+	private List<Item> lastResult;
+
+	private List<Item> newResult;
+
+	//<<<<<<< HEAD
+	//TODO Sarah added these
+	@FXML	
+	private TableView<Item> table;
+
+	@FXML	
+	private TableColumn<TableView<Item>, String> titleCol;
+
+	@FXML	
+	private TableColumn<TableView<Item>, Double> priceCol;
+
+	@FXML	
+	private TableColumn<TableView<Item>, Hyperlink> urlCol;
+
+	@FXML	
+	private TableColumn<TableView<Item>, Calendar> dateCol;
+
+	@FXML
+	private Button refine;
+	//
+
+	//=======
+	//>>>>>>> refs/remotes/origin/test_(2,3)
+	/**
+	 * Default controller
+	 */
+	public Controller() {
+		scraper = new WebScraper();
+	}
+
+	/**
+	 * Default initializer. It is empty.
+	 */
+	@FXML
+	private void initialize() {
+		/*<<<<<<< HEAD
     	//lastSearch.setDisable(true);
     	textAreaConsole.setText("");
     	labelCount.setText("<total>");
@@ -116,117 +126,240 @@ public class Controller {
     	lastResult = new ArrayList<Item>();
     	newResult = new ArrayList<Item>();
     	textFieldKeyword.setText("");
-    	
+
     	refine.setDisable(true);
     	table.getItems().clear();
     }
-    
+
     public void setHostServices(HostServices hostService) {
     	this.hostService = hostService;
-    }
-    
-    /**
-     * Called when the search button is pressed.
-     */
-    @FXML
+=======*/
+		lastSearch.setDisable(true);
+		textAreaConsole.setText("");
+		labelCount.setText("<total>");
+		labelPrice.setText("<AvgPrice>");
+		labelMin.setText("<Lowest>");
+		labelMin.setOnAction(null);
+		labelLatest.setText("<Latest>");
+		labelLatest.setOnAction(null);
+		lastResult = new ArrayList<Item>();
+		newResult = new ArrayList<Item>();
+		textFieldKeyword.setText("");
+	}
+
+	public void setHostServices(HostServices hostServices) {
+		this.hostService = hostServices;
+		//>>>>>>> refs/remotes/origin/test_(2,3)
+	}
+
+	/**
+	 * Called when the search button is pressed. Set data that will be displayed in Console and Summary tab
+	 * @param listItem The items that are scraped from the two selling portals
+	 */
+	//    @FXML
+	/*<<<<<<< HEAD
     private void actionSearch() {
     	System.out.println("actionSearch: " + textFieldKeyword.getText());
     	List<Item> result = scraper.scrape(textFieldKeyword.getText());
     	//newResult.addAll(result);
-    	String output = "";
-    	for (Item item : result) {
-    		output += item.getTitle() + "\t" + item.getPrice() + "\t" + item.getUrl() + "\n";
-    	}
-    	textAreaConsole.setText(output);
-    	displayTable(result);
-    	refine.setDisable(false);
-    }
-    
-    /**
-     * Called when user requests last search result
-     */
-    @FXML
-    private void actionNew() {
-//    	lastSearch.setDisable(true);
-    	System.out.println("actionNew");
-    	if(lastResult.size()!=0) {
-//    		summarizing(lastResult);
-    		displayTable(lastResult);
-    		newResult.clear();
-    		newResult.addAll(lastResult);
-    		lastResult.clear();
-    	} else {
-    		System.out.println("no previous result");
-    		initialize();
-    	}
-    }
+=======*/
+	private void summarizing(List<Item> listItem) {
+		//>>>>>>> refs/remotes/origin/test_(2,3)
+		String output = "";
+		// calculate the avg price
+		int countPrice = 0;
+		double totalPrice = 0.0;
+		Item minItem = null, lastDate = null;
+		for (Item item : listItem) {
+			output += item.getTitle() + "\t" + item.getPrice() + "\t" + item.getUrl() +"\t"+item.getStringDate()+"\n";
+			if(item.getPrice()>0.0) {
+				countPrice++;
+				totalPrice+= item.getPrice();
+				// assign the first valid item to MIN or compare the item of MIN and in the result list 
+				if(minItem == null || minItem.getPrice()>item.getPrice()) {
+					minItem = item;
+					labelMin.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent e) {
+							hostService.showDocument(item.getUrl());
+						}
+					});
+				}
 
-    /**
-     * Called when user presses refine
-     */
-    @FXML
-    private void actionRefine() {
-    	System.out.println("actionRefine");
-    	refine.setDisable(true);
-    	List<Item> result = new ArrayList<Item>();
-    	//System.out.println(newResult.size());
-    	for (Item i : newResult) {
-    		//System.out.println(0);
-    		if(i.getTitle().contains(textFieldKeyword.getText())) {
-    			//System.out.println(i.getTitle());
-    			result.add(i);
-    		}
-    	}
-    	
-    	displayTable(result);
+				// assign the first valid item to DATE or compare the item of DATE and in the result list
+				if(lastDate == null || lastDate.getDate().before(item.getDate())){
+					lastDate = item;
+					labelLatest.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent e) {
+							hostService.showDocument(item.getUrl());
+						}
+					});
+				}
+
+			}
+		}
+		output += "\nSearch on selling portal: Craigslist and Preloved."
+				+ "\nNumber of pagination on Craigslist: " + scraper.getNumPage("craigslist") + " pages."
+				+ "\nNumber of pagination on Preloved: " + scraper.getNumPage("preloved") + " pages."
+				+ "\nNumber of results: " + scraper.getNumResults() + "."
+				+ "\nSearch finsihed.\n";
+		output += "Items are sorted in ascending order of its price. If two items have the same price, item sold on Craiglist go first. If two items from the same portal has the same price, they can be sorted in any order.\n";
+
+		labelCount.setText(Integer.toString(listItem.size()));
+		textAreaConsole.setText(output);
+		//<<<<<<< HEAD
+		displayTable(listItem);
+		refine.setDisable(false);
+		//=======
+		DecimalFormat df = new DecimalFormat("#.00");
+		labelPrice.setText(df.format(totalPrice/countPrice));
+		System.out.println("finish summarize");
+		labelMin.setText(Double.toString(minItem.getPrice()));
+		labelLatest.setText(lastDate.getStringDate());
+		//>>>>>>> refs/remotes/origin/test_(2,3)
+	}
+
+	@FXML
+	private void actionSearch() {
+		lastSearch.setDisable(false);
+		System.out.println("actionSearch: " + textFieldKeyword.getText());
+		List<Item> result = scraper.scrape(textFieldKeyword.getText());
+
+		if(!newResult.isEmpty()) {
+			lastResult.clear();
+			lastResult.addAll(newResult);
+			newResult.clear();
+		}
+
+		// check if result have item inside (result.size() > 0 )
+		if (result.size() !=0) {
+			summarizing(result);
+			newResult.addAll(result);
+
+		} else {
+			labelPrice.setText("-");
+			labelMin.setText("-");
+			labelMin.setOnAction(null);
+			labelLatest.setText("-");
+			labelLatest.setOnAction(null);
+		}
+	}
+	/**
+	 * Called when user requests last search result
+	 */
+	@FXML
+	private void actionNew() {
+		lastSearch.setDisable(true);
+		System.out.println("actionNew");
+		if(lastResult.size()!=0) {
+			//<<<<<<< HEAD
+			summarizing(lastResult);
+			displayTable(lastResult);
+			newResult.clear();
+			newResult.addAll(lastResult);
+			lastResult.clear();
+		} else {
+			System.out.println("no previous result");
+			initialize();
+		}
+
+		/*    	displayTable(result);
     	//summerizing(result);
     	String output = "";
     	for (Item item : result) {
     		output += item.getTitle() + "\t" + item.getPrice() + "\t" + item.getUrl() + "\n";
     	}
-    	textAreaConsole.setText(output);
-    }
-    
-    /**
-     * Display the list of Items on table
-     */
-    private void displayTable(List<Item> result) {
-    	table.getItems().clear();
-    	ObservableList<Item> l = FXCollections.observableList(result);
-    	table.setItems(l);
-    	titleCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, String>("title"));
-    	priceCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Double>("price"));
-    	urlCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Hyperlink>("link"));
-    	urlCol.setCellFactory(new HyperlinkCell());
-    	dateCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Calendar>("postedDate"));
-    }
-    
-    /**
-     * Class for tablecells that contain a hyperlink
-     */
-    public class HyperlinkCell implements Callback<TableColumn<TableView<Item>, Hyperlink>, TableCell<TableView<Item>, Hyperlink>> {
-    	public HostServices getHostServices() {
-    		return hostService;
-    	}
-    	
-    	@Override
-    	public TableCell<TableView<Item>, Hyperlink> call(TableColumn<TableView<Item>, Hyperlink> arg) {
-    		TableCell<TableView<Item>, Hyperlink> cell = new TableCell<TableView<Item>, Hyperlink>() {
-    			@Override
-    			protected void updateItem(Hyperlink item, boolean empty) {
-    				setGraphic(empty ? null : item);
-    				if (!empty)
-    				item.setOnAction(new EventHandler<ActionEvent>() {
-    					@Override
-    					public void handle(ActionEvent e) {
-    						System.out.println("handle"+item.getText());
-    						hostService.showDocument(item.getText());
-    					}
-    				});
-    			}
-    		};
-    		return cell;
-    	}
-    }
-}
+    	textAreaConsole.setText(output);*/
+	}
 
+
+
+
+	/*=======
+    		summarizing(lastResult);
+    	} else {
+    		System.out.println("no previous result");
+    		initialize();
+    	}
+    }*/
+	@FXML
+	private void actionQuit() {
+		Platform.exit();
+		System.exit(0);
+	}
+
+	@FXML
+	private void actionClose() {
+		initialize();
+	}
+
+	@FXML
+	private void actionAbout() {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Team Information");
+		alert.setHeaderText("Team Information: ");
+		alert.setContentText("Name: \tStudent ID: \tGithub account: \nHo Wai Kin\twkhoae\tjohnnyn2\nFung Hing Lun\thlfungad\tvictor0362\nHo Tsz Kiu\ttkhoad\tsarahtkho");
+		alert.showAndWait();
+		//>>>>>>> refs/remotes/origin/test_(2,3)
+	}
+	/**
+	 * Called when user presses refine
+	 */
+	@FXML
+	private void actionRefine() {
+		System.out.println("actionRefine");
+		refine.setDisable(true);
+		List<Item> result = new ArrayList<Item>();
+		//System.out.println(newResult.size());
+		for (Item i : newResult) {
+			//System.out.println(0);
+			if(i.getTitle().contains(textFieldKeyword.getText())) {
+				//System.out.println(i.getTitle());
+				result.add(i);
+			}
+		}
+	}
+
+	/**
+	 * Display the list of Items on table
+	 */
+	private void displayTable(List<Item> result) {
+		table.getItems().clear();
+		ObservableList<Item> l = FXCollections.observableList(result);
+		table.setItems(l);
+		titleCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, String>("title"));
+		priceCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Double>("price"));
+		urlCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Hyperlink>("link"));
+		urlCol.setCellFactory(new HyperlinkCell());
+		dateCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Calendar>("postedDate"));
+	}
+
+	/**
+	 * Class for tablecells that contain a hyperlink
+	 */
+	public class HyperlinkCell implements Callback<TableColumn<TableView<Item>, Hyperlink>, TableCell<TableView<Item>, Hyperlink>> {
+		public HostServices getHostServices() {
+			return hostService;
+		}
+
+		@Override
+		public TableCell<TableView<Item>, Hyperlink> call(TableColumn<TableView<Item>, Hyperlink> arg) {
+			TableCell<TableView<Item>, Hyperlink> cell = new TableCell<TableView<Item>, Hyperlink>() {
+				@Override
+				protected void updateItem(Hyperlink item, boolean empty) {
+					setGraphic(empty ? null : item);
+					if (!empty)
+						item.setOnAction(new EventHandler<ActionEvent>() {
+							@Override
+							public void handle(ActionEvent e) {
+								System.out.println("handle"+item.getText());
+								hostService.showDocument(item.getText());
+							}
+						});
+				}
+			};
+			return cell;
+		}
+	}
+}

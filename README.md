@@ -1,6 +1,12 @@
 # COMP3111: Software Engineering Project - Webscrapper
-## Project Problem Statement and Activities
 
+### Team: KennethIsTheBest
+> #### Team members:  
+>	 Ho Wai Kin (Basic 2, Basic 3)  
+>	 Fung Hing Lun (Basic 1, Basic 6)  
+>	 Ho Tsz Kiu (Basic 4, Basic 5)  
+
+## Project Problem Statement and Activities
 
 > **Activity 1 Due (20%): 15-10-2018 (Wk 7 Mon) 23:59**
 > Submission details will be provided on Canvas

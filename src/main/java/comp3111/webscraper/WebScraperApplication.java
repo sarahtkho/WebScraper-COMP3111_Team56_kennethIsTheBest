@@ -52,14 +52,13 @@ public class WebScraperApplication extends Application {
    		VBox root = (VBox) loader.load();
    		Scene scene =  new Scene(root);
    		Controller c = loader.getController();
-   	    c.setHostServices(getHostServices());
+   		c.setHostServices(getHostServices());
    		stage.setScene(scene);
    		stage.setTitle("WebScrapper");
    		stage.show();
     		
 
 	}
-
 	/**
 	 * Entry point of the program. No argument should be supplied
 	 * @param args - not used.
