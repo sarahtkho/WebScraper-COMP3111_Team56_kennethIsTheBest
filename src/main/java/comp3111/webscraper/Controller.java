@@ -91,7 +91,8 @@ public class Controller {
     }
     
     /**
-     * Called when the search button is pressed.
+     * Called when the search button is pressed. Set data that will be displayed in Console and Summary tab
+     * @param listItem The items that are scraped from the two selling portals
      */
     @FXML
     private void summarizing(List<Item> listItem) {
