@@ -1,7 +1,6 @@
 package comp3111.webscraper;
 
 import java.util.Calendar;
-//<<<<<<< HEAD
 
  /** 
   * Contains the items information that are scraped from the selling portals, such as it's name, price, url and postdate
@@ -10,30 +9,15 @@ import java.util.Calendar;
   * @author Ho Wai Kin Johnny
   */
 public class Item implements Comparable<Item>{
-/*=======
 
-
-public class Item {
->>>>>>> refs/remotes/origin/master*/
 	private String title ; 
 	private double price ;
 	private String url ;
-/*<<<<<<< HEAD
-	private String postdate;
-=======*/
 	private Calendar postedDate;
 	
 	public Item() {
 		this.postedDate= Calendar.getInstance();
 	}
-/*>>>>>>> refs/remotes/origin/master
-	
-	*//**
-	 * Default constrcutor
-	 *//*
-	public Item(){
-		
-	}*/
 	
 	/**
 	 * Get item title
@@ -82,26 +66,6 @@ public class Item {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
-/*<<<<<<< HEAD
-	
-	*//**
-	 * Set item postdate
-	 * @param postdate The date of the item being posted on the selling portal (e.g. 2018-11-18 00:24)
-	 *//*
-	public void setPostdate(String postdate) {
-		this.postdate = postdate;
-	}
-	
-	*//**
-	 * Get item post date
-	 * @return The date of the item being posted on selling portal (e.g. 2018-11-18 00:24)
-	 *//*
-	public String getPostdate() {
-		return postdate;
-	}
-	*/
-	
 	/**
 	 * Used to sort all items by price
 	 * @param other Another item in the result vector
@@ -116,14 +80,24 @@ public class Item {
 		else
 			return 0;
 	}
-//=======
+	
+	/**
+	 * Get item post date
+	 * @return The date of the item being posted on selling portal (e.g. 2018-11-18 00:24)
+	 */
 	public Calendar getDate() {
 		return postedDate;
 	}
+	
 	public String getStringDate() {
 		return postedDate.get(Calendar.YEAR) + "-" + (postedDate.get(Calendar.MONTH)+1) + "-" + postedDate.get(Calendar.DAY_OF_MONTH)+" "+postedDate.get(Calendar.HOUR)+":"+postedDate.get(Calendar.MINUTE);
 		// Month get a +1 for MONTH start at 0; 0 == JAN
 	}
+	
+	/**
+	 * Set item postdate
+	 * @param postdate The date of the item being posted on the selling portal (e.g. 2018-11-18 00:24)
+	 */
 	public void setDate(String searchDate) {
 		postedDate.clear();
 		if(!searchDate.contains("ago")) {
@@ -142,6 +116,4 @@ public class Item {
 				postedDate.add(Calendar.MINUTE, Integer.parseInt(searchDate.substring(0, searchDate.indexOf(" ")))*-1);
 		}
 	}
-
-//>>>>>>> refs/remotes/origin/master
 }

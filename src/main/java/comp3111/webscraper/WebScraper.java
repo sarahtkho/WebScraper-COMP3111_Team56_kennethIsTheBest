@@ -141,29 +141,20 @@ public class WebScraper {
 				HtmlElement htmlItem = (HtmlElement) items.get(i);
 				HtmlAnchor itemAnchor = ((HtmlAnchor) htmlItem.getFirstByXPath(".//p[@class='result-info']/a"));
 				HtmlElement spanPrice = ((HtmlElement) htmlItem.getFirstByXPath(".//a/span[@class='result-price']"));
-/*<<<<<<< HEAD
-		//		HtmlElement postdate = ((HtmlElement) htmlItem.getFirstByXPath(".//p[@class='result-info']/time[@class='result-date']"));
-				HtmlElement postdate = (HtmlElement) htmlItem.getFirstByXPath(".//time");
-=======*/
+
 				HtmlElement timeDate = ((HtmlElement) htmlItem.getFirstByXPath(".//time"));
 
-//>>>>>>> refs/remotes/origin/master
 				// It is possible that an item doesn't have any price, we set the price to 0.0
 				// in this case
 				String itemPrice = spanPrice == null ? "0.0" : spanPrice.asText();
 
 				Item item = new Item();
 				item.setTitle(itemAnchor.asText());
-/*<<<<<<< HEAD
-				item.setUrl(DEFAULT_URL + itemAnchor.getHrefAttribute());
-					
-=======*/
+
 				item.setUrl(itemAnchor.getHrefAttribute());
 				item.setDate(timeDate.getAttribute("datetime"));
 				
-//>>>>>>> refs/remotes/origin/master
 				item.setPrice(new Double(itemPrice.replace("$", "")));
-				//item.setPostdate(postdate.getAttribute("datetime"));
 				result.add(item);
 				numResults++;
 			}
