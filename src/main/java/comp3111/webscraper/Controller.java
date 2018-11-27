@@ -22,6 +22,17 @@ import java.util.ArrayList;
 import javafx.application.*;
 import java.text.DecimalFormat;
 
+import javafx.scene.control.Button;
+
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.collections.ObservableList;
+//import javafx.application.HostServices;
+import javafx.collections.FXCollections;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
+
 /**
  * 
  * @author kevinw
@@ -52,6 +63,24 @@ public class Controller {
     
     @FXML
     private TextArea textAreaConsole;
+    
+    @FXML	
+	private TableView<Item> table;
+
+	@FXML	
+	private TableColumn<TableView<Item>, String> titleCol;
+
+	@FXML	
+	private TableColumn<TableView<Item>, Double> priceCol;
+
+	@FXML	
+	private TableColumn<TableView<Item>, Hyperlink> urlCol;
+
+	@FXML	
+	private TableColumn<TableView<Item>, String> dateCol;
+
+	@FXML
+	private Button refine;
     
     private WebScraper scraper;
     
@@ -84,6 +113,9 @@ public class Controller {
     	lastResult = new ArrayList<Item>();
     	newResult = new ArrayList<Item>();
     	textFieldKeyword.setText("");
+    	
+    	refine.setDisable(true);
+    	table.getItems().clear();
     }
     
     public void setHostServices(HostServices hostServices) {
@@ -148,6 +180,8 @@ public class Controller {
     
     @FXML
     private void actionSearch() {
+    	refine.setDisable(false);
+    	
     	lastSearch.setDisable(false);
     	System.out.println("actionSearch: " + textFieldKeyword.getText());
     	List<Item> result = scraper.scrape(textFieldKeyword.getText());
@@ -162,6 +196,8 @@ public class Controller {
     	if (result.size() !=0) {
     		summarizing(result);
 	    	newResult.addAll(result);
+	    	
+	    	displayTable(result);
 	    	
     	} else {
     		labelPrice.setText("-");
@@ -180,6 +216,12 @@ public class Controller {
     	System.out.println("actionNew");
     	if(lastResult.size()!=0) {
     		summarizing(lastResult);
+    		refine.setDisable(false);
+    		
+    		displayTable(lastResult);
+    		newResult.clear();
+			newResult.addAll(lastResult);
+			lastResult.clear();
     	} else {
     		System.out.println("no previous result");
     		initialize();
@@ -204,5 +246,61 @@ public class Controller {
     	alert.setContentText("Name: \tStudent ID: \tGithub account: \nHo Wai Kin\twkhoae\tjohnnyn2\nFung Hing Lun\thlfungad\tvictor0362\nHo Tsz Kiu\ttkhoad\tsarahtkho");
     	alert.showAndWait();
     }
+    
+    @FXML
+    private void actionRefine() {
+    	System.out.println("actionRefine: " + textFieldKeyword.getText());
+		refine.setDisable(true);
+		List<Item> result = new ArrayList<Item>();
+		for (Item i : newResult) {
+			if(i.getTitle().contains(textFieldKeyword.getText())) {
+				result.add(i);
+				
+			}
+		}
+		summarizing(result);
+		displayTable(result);
+		System.out.println("Finish refine.");
+    }
+    
+    private void displayTable(List<Item> result) {
+    	System.out.println("displayTable");
+    	table.getItems().clear();
+    	ObservableList<Item> l = FXCollections.observableList(result);
+		table.setItems(l);
+		titleCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, String>("title"));
+		priceCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Double>("price"));
+		urlCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Hyperlink>("link"));
+		urlCol.setCellFactory(new HyperlinkCell());
+		dateCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, String>("StringDate"));
+		
+    }
+    
+    /**
+	 * Class for tablecells that contain a hyperlink
+	 */
+	public class HyperlinkCell implements Callback<TableColumn<TableView<Item>, Hyperlink>, TableCell<TableView<Item>, Hyperlink>> {
+		public HostServices getHostServices() {
+			return hostService;
+		}
+
+		@Override
+		public TableCell<TableView<Item>, Hyperlink> call(TableColumn<TableView<Item>, Hyperlink> arg) {
+			TableCell<TableView<Item>, Hyperlink> cell = new TableCell<TableView<Item>, Hyperlink>() {
+				@Override
+				protected void updateItem(Hyperlink item, boolean empty) {
+					setGraphic(empty ? null : item);
+					if (!empty)
+						item.setOnAction(new EventHandler<ActionEvent>() {
+							@Override
+							public void handle(ActionEvent e) {
+								System.out.println("open: "+item.getText());
+								hostService.showDocument(item.getText());
+							}
+						});
+				}
+			};
+			return cell;
+		}
+	}
 }
-//test
