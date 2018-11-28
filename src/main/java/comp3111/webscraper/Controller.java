@@ -28,7 +28,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.collections.ObservableList;
-//import javafx.application.HostServices;
 import javafx.collections.FXCollections;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
@@ -123,7 +122,7 @@ public class Controller {
     }
     
     /**
-     * Called when the search button is pressed. Set data that will be displayed in Console and Summary tab
+     * Called when the Go button is pressed. Set data that will be displayed in Console and Summary tab
      * @param listItem The items that are scraped from the two selling portals
      */
     @FXML
@@ -178,6 +177,9 @@ public class Controller {
     	labelLatest.setText(lastDate.getStringDate());
     }
     
+    /**
+     * Called when the Go button is pressed. Set data that will be displayed in Console and Summary tab
+     */
     @FXML
     private void actionSearch() {
     	refine.setDisable(false);
@@ -269,7 +271,7 @@ public class Controller {
     }
     
     /**
-	 * Function for displaying a List of Item objects on the Table tab.
+	 * Method for displaying a List of Item objects on the Table tab.
 	 * @param result The list to be displayed.
 	 */
     private void displayTable(List<Item> result) {
