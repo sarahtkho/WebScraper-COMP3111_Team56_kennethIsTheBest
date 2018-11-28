@@ -207,6 +207,7 @@ public class Controller {
     		labelLatest.setOnAction(null);
     	}
     }
+    
     /**
      * Called when the new button is pressed. Very dummy action - print something in the command prompt.
      */
@@ -247,6 +248,10 @@ public class Controller {
     	alert.showAndWait();
     }
     
+    /**
+	 * Called when the Refine button is pressed. Filters out the Items without the user-entered keyword in the title; then
+	 * summarizes and displays the result on Console and Table.
+	 */
     @FXML
     private void actionRefine() {
     	System.out.println("actionRefine: " + textFieldKeyword.getText());
@@ -263,6 +268,10 @@ public class Controller {
 		System.out.println("Finish refine.");
     }
     
+    /**
+	 * Function for displaying a List of Item objects on the Table tab.
+	 * @param result The list to be displayed.
+	 */
     private void displayTable(List<Item> result) {
     	System.out.println("displayTable");
     	table.getItems().clear();
@@ -277,7 +286,7 @@ public class Controller {
     }
     
     /**
-	 * Class for tablecells that contain a hyperlink
+	 * Class for tablecells that contain a hyperlink and open a browser when the hyperlink is clicked.
 	 */
 	public class HyperlinkCell implements Callback<TableColumn<TableView<Item>, Hyperlink>, TableCell<TableView<Item>, Hyperlink>> {
 		public HostServices getHostServices() {
