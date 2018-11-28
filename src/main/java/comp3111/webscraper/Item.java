@@ -15,6 +15,9 @@ public class Item implements Comparable<Item>{
 	private String url ;
 	private Calendar postedDate;
 	
+	/**
+	 * Default constructor
+	 */
 	public Item() {
 		this.postedDate= Calendar.getInstance();
 	}
