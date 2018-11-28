@@ -1,8 +1,13 @@
 package comp3111.webscraper;
 
 import java.net.URLEncoder;
-import java.util.List;
 
+import java.util.Collection;
+import java.util.Collections; //import Collections class for sorting the items 
+import java.util.List;
+import java.util.regex.Pattern; // imported Pattern class from Regex for formatting special characters into regular expression
+
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;// imported exception class for feature 3
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
@@ -66,6 +71,34 @@ import java.util.Vector;
 public class WebScraper {
 
 	private static final String DEFAULT_URL = "https://newyork.craigslist.org/";
+	
+	// Feature 2 Preloved will be used as the second selling portal
+	private static final String PRELOVED_URL = "https://www.preloved.co.uk/";
+	
+	// Feature 3 Record # of pages being searched
+	private int numPage_craigslist;
+	
+	// Feature 3 Record # of pages being searched
+	private int numPage_preloved;
+	
+	// Feature 3 Record # of search results
+	private int numResults;
+	
+
+	//Contains special characters
+	private String specialCharacters[] = {
+	Pattern.quote("%"), Pattern.quote("/"), Pattern.quote("?"), Pattern.quote("'"), Pattern.quote(";"), Pattern.quote(":"), Pattern.quote("["),
+	Pattern.quote("]"), Pattern.quote("{"), Pattern.quote("}"), Pattern.quote("|"), Pattern.quote("\\"), Pattern.quote("`"), Pattern.quote("!"), Pattern.quote("@"), Pattern.quote("#"), Pattern.quote("$"),
+	Pattern.quote(","), Pattern.quote("^"), Pattern.quote("&"), Pattern.quote("("), Pattern.quote(")"), Pattern.quote("="), Pattern.quote("+"), Pattern.quote(" ")
+	};
+	
+	//contains corresponding url mapping for special characters
+	private String urlCharacters[] = {
+	"%25", "%2F", "%3F", "%27", "%3B", "%3A", "%5B", 
+	"%5D", "%7B", "%7D","%7C", "%5C", "%60", "%21", "%40", "%23", "%24",
+	"%2C", "%5E", "&26", "%28", "%29", "%3D", "%2B", "+"
+	};
+	
 	private WebClient client;
 
 	/**
@@ -75,18 +108,28 @@ public class WebScraper {
 		client = new WebClient();
 		client.getOptions().setCssEnabled(false);
 		client.getOptions().setJavaScriptEnabled(false);
+		numPage_craigslist = 0;
+		numPage_preloved = 0;
+		numResults = 0;
 	}
 
 	/**
-	 * The only method implemented in this class, to scrape web content from the craigslist
+	 * Scrape web content from two selling portals, Craigslist and Preloved
 	 * 
-	 * @param keyword - the keyword you want to search
+	 * @param keyword The keyword entered by the user
 	 * @return A list of Item that has found. A zero size list is return if nothing is found. Null if any exception (e.g. no connectivity)
+	 * @exception FailingHttpStatusCodeException Being thrown when the URL doesn't exist. If there is not nay pagination of a particular search, this exception occurs 
 	 */
 	public List<Item> scrape(String keyword) {
-
+		numPage_craigslist=0;
+		numPage_preloved=0;
+		numResults = 0;
 		try {
-			String searchUrl = DEFAULT_URL + "search/sss?sort=rel&query=" + URLEncoder.encode(keyword, "UTF-8");
+			
+			//Original source code to scrape one page of items in craigslist
+			String formattedKeyword = formatKeyword(keyword);
+
+			String searchUrl = DEFAULT_URL + "search/sss?sort=rel&query=" + URLEncoder.encode(formattedKeyword, "UTF-8");
 			HtmlPage page = client.getPage(searchUrl);
 
 			
@@ -98,6 +141,7 @@ public class WebScraper {
 				HtmlElement htmlItem = (HtmlElement) items.get(i);
 				HtmlAnchor itemAnchor = ((HtmlAnchor) htmlItem.getFirstByXPath(".//p[@class='result-info']/a"));
 				HtmlElement spanPrice = ((HtmlElement) htmlItem.getFirstByXPath(".//a/span[@class='result-price']"));
+
 				HtmlElement timeDate = ((HtmlElement) htmlItem.getFirstByXPath(".//time"));
 
 				// It is possible that an item doesn't have any price, we set the price to 0.0
@@ -106,13 +150,92 @@ public class WebScraper {
 
 				Item item = new Item();
 				item.setTitle(itemAnchor.asText());
+
 				item.setUrl(itemAnchor.getHrefAttribute());
 				item.setDate(timeDate.getAttribute("datetime"));
 				
 				item.setPrice(new Double(itemPrice.replace("$", "")));
-
 				result.add(item);
+				numResults++;
 			}
+			if(items.size() > 0)
+				numPage_craigslist++;
+			
+			//Feature 3 Handle pagination
+			try {
+				int temp=2;
+				int numItems=120;
+				String searchUrl_pagination = DEFAULT_URL + "search/sss?s="+ Integer.toString(numItems) +"&sort=rel&query=" + URLEncoder.encode(formattedKeyword, "UTF-8");
+				HtmlPage page_crai_pagination = client.getPage(searchUrl_pagination);
+				for(int p=0;p<3;p++) {
+			//	while(page_crai_pagination!=null) {
+					List<?> items_crai_pagination = (List<?>) page_crai_pagination.getByXPath("//li[@class='result-row']");
+					for(int i=0;i<items_crai_pagination.size();i++) {
+						HtmlElement htmlItem = (HtmlElement) items_crai_pagination.get(i);
+						HtmlAnchor itemAnchor = ((HtmlAnchor) htmlItem.getFirstByXPath(".//p[@class='result-info']/a"));
+						HtmlElement spanPrice = ((HtmlElement) htmlItem.getFirstByXPath(".//a/span[@class='result-price']"));
+						//HtmlElement postdate = ((HtmlElement) htmlItem.getFirstByXPath(".//p[@class='result-info']/time[@class='result-date']"));
+						HtmlElement postdate = (HtmlElement) htmlItem.getFirstByXPath(".//time");
+						// It is possible that an item doesn't have any price, we set the price to 0.0
+						// in this case
+						String itemPrice = spanPrice == null ? "0.0" : spanPrice.asText();
+
+						Item item = new Item();
+						item.setTitle(itemAnchor.asText());
+						item.setUrl(DEFAULT_URL + itemAnchor.getHrefAttribute());
+							
+						item.setPrice(new Double(itemPrice.replace("$", "")));
+						item.setDate(postdate.getAttribute("datetime"));
+						result.add(item);
+						numResults++;
+					}
+					numItems = temp*numItems;
+					temp++;
+					if(items_crai_pagination.size() > 0)
+						numPage_craigslist++;
+					searchUrl_pagination = DEFAULT_URL + "search/sss?s="+ Integer.toString(numItems) +"&sort=rel&query=" + URLEncoder.encode(formattedKeyword, "UTF-8");
+					page_crai_pagination = client.getPage(searchUrl_pagination);
+				}
+				
+			}catch(FailingHttpStatusCodeException e) {} 
+			
+			//Feature 2 scrape data from Preloved
+			String search_Url_Preloved = PRELOVED_URL + "search?keyword=" + URLEncoder.encode(formattedKeyword, "UTF-8");
+			HtmlPage page_preloved = client.getPage(search_Url_Preloved);
+			List<?> items_preloved = (List<?>) page_preloved.getByXPath("//li[@class='search-result']");
+			for (int i=0;i<items_preloved.size();i++) {
+				HtmlElement htmlItem = (HtmlElement) items_preloved.get(i);
+				HtmlAnchor itemAnchor = ((HtmlAnchor) htmlItem.getFirstByXPath(".//h2/a[@class='search-result__title is-title']"));
+				HtmlElement spanPrice = ((HtmlElement) htmlItem.getFirstByXPath(".//span/span[@itemprop='price']"));
+				
+				// It is possible that an item doesn't have any price, we set the price to 0.0
+				// in this case
+				String itemPrice = spanPrice == null ? "0.0" : spanPrice.asText();
+				
+				Item item = new Item();
+				item.setTitle(itemAnchor.asText());
+				item.setUrl(PRELOVED_URL + itemAnchor.getHrefAttribute());
+				
+				try {
+					//Preloved is an UK selling portal which uses £. 1 GBP = 1.31 USD
+					item.setPrice(new Double(itemPrice.replace("£", "").replace(",", "")) * 1.31);
+				}
+				catch(NumberFormatException e) {
+					item.setPrice(0.0);
+				}
+				//Get post date
+				HtmlPage item_page_preloved = client.getPage(itemAnchor.getHrefAttribute());
+				HtmlElement postdate = (HtmlElement) item_page_preloved.getFirstByXPath("//li[@class='classified__additional__meta__item classified__timeago']");
+				item.setDate(postdate.asText().replace("This advert was updated ",""));
+					
+				result.add(item);
+				numResults++;
+			}
+			if(items_preloved.size() > 0)
+				numPage_preloved++;
+			
+			//Sort the items
+			Collections.sort(result);
 			client.close();
 			return result;
 		} catch (Exception e) {
@@ -120,5 +243,42 @@ public class WebScraper {
 		}
 		return null;
 	}
-
+	
+	/**
+	 * Check whether the keyword contains special characters and format the keyword if it contains any special character  
+	 * 
+	 * @param keyword The keyword you want to search
+	 * @return A formattedKeyword that will be entered to the url
+	 * 
+	 **/
+	public String formatKeyword(String keyword) {
+		String formattedKeyword = keyword;
+		for(int i=0;i<specialCharacters.length;i++) {
+			formattedKeyword.replaceAll(specialCharacters[i], urlCharacters[i]);
+		}
+		return formattedKeyword;
+	}
+	
+	/**
+	 * Get the number of pages being scraped
+	 * 
+	 * @param portal The name of the portal
+	 * @return The number of pages that are scraped for a particular search
+	 */
+	public int getNumPage(String portal) {
+		if(portal=="craigslist")
+			return numPage_craigslist;
+		else if(portal=="preloved")
+			return numPage_preloved;
+		else return 0;
+	}
+	
+	/**
+	 * Get the number of items being scraped
+	 * 
+	 * @return The number of items that are scraped
+	 */
+	public int getNumResults() {
+		return numResults;
+	}
 }

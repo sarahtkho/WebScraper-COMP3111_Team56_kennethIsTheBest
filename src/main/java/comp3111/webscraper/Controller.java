@@ -91,7 +91,8 @@ public class Controller {
     }
     
     /**
-     * Called when the search button is pressed.
+     * Called when the search button is pressed. Set data that will be displayed in Console and Summary tab
+     * @param listItem The items that are scraped from the two selling portals
      */
     @FXML
     private void summarizing(List<Item> listItem) {
@@ -129,6 +130,13 @@ public class Controller {
     				
     		}
     	}
+    	output += "\nSearch on selling portal: Craigslist and Preloved."
+    			+ "\nNumber of pagination on Craigslist: " + scraper.getNumPage("craigslist") + " pages."
+    			+ "\nNumber of pagination on Preloved: " + scraper.getNumPage("preloved") + " pages."
+    			+ "\nNumber of results: " + scraper.getNumResults() + "."
+    			+ "\nSearch finsihed.\n";
+    	output += "Items are sorted in ascending order of its price. If two items have the same price, item sold on Craiglist go first. If two items from the same portal has the same price, they can be sorted in any order.\n";
+    	
     	labelCount.setText(Integer.toString(listItem.size()));
     	textAreaConsole.setText(output);
     	DecimalFormat df = new DecimalFormat("#.00");
@@ -144,13 +152,12 @@ public class Controller {
     	System.out.println("actionSearch: " + textFieldKeyword.getText());
     	List<Item> result = scraper.scrape(textFieldKeyword.getText());
     	
-    	
     	if(!newResult.isEmpty()) {
     		lastResult.clear();
     		lastResult.addAll(newResult);
     		newResult.clear();
     	}
-    	
+
     	// check if result have item inside (result.size() > 0 )
     	if (result.size() !=0) {
     		summarizing(result);
@@ -164,7 +171,6 @@ public class Controller {
     		labelLatest.setOnAction(null);
     	}
     }
-    
     /**
      * Called when the new button is pressed. Very dummy action - print something in the command prompt.
      */
@@ -199,4 +205,3 @@ public class Controller {
     	alert.showAndWait();
     }
 }
-
