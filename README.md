@@ -1,5 +1,5 @@
-Fung Hing Lun : Feature 1 and 6
-Ho Tsz Kiu : Feature 4 and 5
+Fung Hing Lun : Feature 1 and 6<br/>
+Ho Tsz Kiu : Feature 4 and 5<br/>
 Ho Wai Kin : Feature 2 and 3
 
 We scrape items from two selling portals, Craigslist and Preloved.
