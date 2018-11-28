@@ -72,7 +72,7 @@ public class Controller {
      * Default initializer. It is empty.
      */
     @FXML
-    private void initialize() {
+    public void initialize() {
     	lastSearch.setDisable(true);
     	textAreaConsole.setText("");
     	labelCount.setText("<total>");
@@ -95,7 +95,7 @@ public class Controller {
      * @param listItem The items that are scraped from the two selling portals
      */
     @FXML
-    private void summarizing(List<Item> listItem) {
+    public void summarizing(List<Item> listItem) {
     	String output = "";
     	// calculate the avg price
     	int countPrice = 0;
@@ -147,7 +147,7 @@ public class Controller {
     }
     
     @FXML
-    private void actionSearch() {
+    public void actionSearch() {
     	lastSearch.setDisable(false);
     	System.out.println("actionSearch: " + textFieldKeyword.getText());
     	List<Item> result = scraper.scrape(textFieldKeyword.getText());
@@ -175,7 +175,7 @@ public class Controller {
      * Called when the new button is pressed. Very dummy action - print something in the command prompt.
      */
     @FXML
-    private void actionNew() {
+    public void actionNew() {
     	lastSearch.setDisable(true);
     	System.out.println("actionNew");
     	if(lastResult.size()!=0) {
@@ -186,18 +186,18 @@ public class Controller {
     	}
     }
     @FXML
-    private void actionQuit() {
+    public void actionQuit() {
     	Platform.exit();
     	System.exit(0);
     }
 
     @FXML
-    private void actionClose() {
+    public void actionClose() {
     	initialize();
     }
     
     @FXML
-    private void actionAbout() {
+    public void actionAbout() {
     	Alert alert = new Alert(AlertType.INFORMATION);
     	alert.setTitle("Team Information");
     	alert.setHeaderText("Team Information: ");
