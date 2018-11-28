@@ -99,7 +99,7 @@ public class Item implements Comparable<Item>{
 	
 	/**
 	 * Set item postdate
-	 * @param postdate The date of the item being posted on the selling portal (e.g. 2018-11-18 00:24)
+	 * @param searchDate The date of the item being posted on the selling portal (e.g. 2018-11-18 00:24)
 	 */
 	public void setDate(String searchDate) {
 		postedDate.clear();
