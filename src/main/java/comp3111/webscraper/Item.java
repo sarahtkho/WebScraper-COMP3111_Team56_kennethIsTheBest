@@ -73,10 +73,17 @@ public class Item implements Comparable<Item>{
 		setLink();
 	}
 	
+	/**
+	 * Set item Hyperlink
+	 */
 	public void setLink() {
 		link = new Hyperlink(url);
 	}
 	
+	/**
+	 * Get item url
+	 * @return Item Hyperlink
+	 */
 	public Hyperlink getLink() {
 		return link;
 	}
@@ -104,6 +111,10 @@ public class Item implements Comparable<Item>{
 		return postedDate;
 	}
 	
+	/**
+	 * Get item postdate as a String
+	 * @return The date of the item being posted on the selling portal in String (e.g. 2018-11-18 00:24)
+	 */
 	public String getStringDate() {
 		return postedDate.get(Calendar.YEAR) + "-" + (postedDate.get(Calendar.MONTH)+1) + "-" + postedDate.get(Calendar.DAY_OF_MONTH)+" "+postedDate.get(Calendar.HOUR)+":"+postedDate.get(Calendar.MINUTE);
 		// Month get a +1 for MONTH start at 0; 0 == JAN
@@ -111,7 +122,7 @@ public class Item implements Comparable<Item>{
 	
 	/**
 	 * Set item postdate
-	 * @param postdate The date of the item being posted on the selling portal (e.g. 2018-11-18 00:24)
+	 * @param searchDate The date of the item being posted on the selling portal (e.g. 2018-11-18 00:24)
 	 */
 	public void setDate(String searchDate) {
 		postedDate.clear();
@@ -130,9 +141,5 @@ public class Item implements Comparable<Item>{
 			else //if (searchDate.contains("minute"))
 				postedDate.add(Calendar.MINUTE, Integer.parseInt(searchDate.substring(0, searchDate.indexOf(" ")))*-1);
 		}
-	}
-
-	public void setStringDate(String stringDate) {
-		StringDate = getStringDate();
 	}
 }

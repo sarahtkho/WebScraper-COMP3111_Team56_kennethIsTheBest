@@ -97,7 +97,7 @@ public class Controller {
     }
 
     /**
-     * Default initializer. It is empty.
+     * Initializer. Initializes the labels on the Summary tab and Refine button and clear the table.
      */
     @FXML
     private void initialize() {
@@ -122,7 +122,7 @@ public class Controller {
     }
     
     /**
-     * Called when the Go button is pressed. Set data that will be displayed in Console and Summary tab
+     * Display the raw data on the Console; summarize data and display the result on Summary tab.
      * @param listItem The items that are scraped from the two selling portals
      */
     @FXML
@@ -178,7 +178,7 @@ public class Controller {
     }
     
     /**
-     * Called when the Go button is pressed. Set data that will be displayed in Console and Summary tab
+     * Called when the Go button is pressed. Keeps track of current and last search result; summarizes and displays data.
      */
     @FXML
     private void actionSearch() {
@@ -211,7 +211,7 @@ public class Controller {
     }
     
     /**
-     * Called when the new button is pressed. Very dummy action - print something in the command prompt.
+     * Called when the Last Search button is pressed. Retrieves last search result and updates the tabs.
      */
     @FXML
     private void actionNew() {
@@ -230,17 +230,27 @@ public class Controller {
     		initialize();
     	}
     }
+    
+    /**
+     * Called when the Quit button is pressed. Terminates the program.
+     */
     @FXML
     private void actionQuit() {
     	Platform.exit();
     	System.exit(0);
     }
 
+    /**
+     * Called when the Close button is pressed. Resets the system.
+     */
     @FXML
     private void actionClose() {
     	initialize();
     }
     
+    /**
+     * Called when the About Your Team button is pressed. Shows team information in a pop-up window.
+     */
     @FXML
     private void actionAbout() {
     	Alert alert = new Alert(AlertType.INFORMATION);
