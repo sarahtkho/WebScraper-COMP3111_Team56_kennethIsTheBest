@@ -7,9 +7,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.Label;
+import java.util.List;
 
 public class ControllerTest {
 	
@@ -48,72 +46,31 @@ public class ControllerTest {
 	}
 	
 	@Test
-	public void testInitialize() {
+	public void testSummarizing() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		WebScraper ws = new WebScraper();
 		Controller c = new Controller();
-		Method method = null;
-		try {
-			method = Controller.class.getDeclaredMethod("initualize");
-		} catch (NoSuchMethodException | SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		// fields need to be checked
-		Field[] fields = new Field[9];
-		fields[0] = findField("lastSearch");
-		fields[1] = findField("textAreaConsole");
-		fields[2] = findField("labelCount");
-		fields[3] = findField("labelPrice");
-		fields[4] = findField("labelMin");
-		fields[5] = findField("labelLatest");
-		fields[6] = findField("lastResult");
-		fields[7] = findField("newResult");
-		fields[8] = findField("textFieldKeyword");
-		
+		List<Item> li = ws.scrape("abc");
+		Class<?> listClass = List.class;
+		Method method = Controller.class.getDeclaredMethod("summarizing", listClass);
 		method.setAccessible(true);
-		try {
-			method.invoke(c);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail("invokation error");
-		}
+		method.invoke(c, li);
+	}
+	
+	@Test
+	public void testActionAbout() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		Controller c = new Controller();
+		Method method = c.getClass().getDeclaredMethod("actionAbout");
+		method.setAccessible(true);
+		method.invoke(c);
+	}
+	
+	@Test
+	public void testActionNew() {
 		
-		for(int i=0; i<9;i++) {
-			if(fields[i]==null)
-				fail("incorrect field name for ["+i+"]");
-			else
-				fields[i].setAccessible(true);
-		}
+	}
+	
+	@Test 
+	public void testActionSearch() {
 		
-		// MenuItem lastSearch
-		try {
-			MenuItem mi = (MenuItem)fields[0].get(c);
-			assertEquals(mi.isDisable(),true);
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail("fail in field[0].get(c)");
-		}
-		
-		// TextArea textAreaConsole
-		try {
-			TextArea ta = (TextArea)fields[1].get(c);
-			assertEquals(ta.getText(),"");
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail("fail in field[1].get(c)");
-		}
-		
-		// Label labelCount
-		try {
-			Label l = (Label)fields[2].get(c);
-			assertEquals(l.getText(),"<total>");
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail("fail in field[2].get(c)");
-		}
 	}
 }

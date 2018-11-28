@@ -93,7 +93,7 @@ public class Controller {
     /**
      * Called when the search button is pressed.
      */
-    @FXML
+    
     private void summarizing(List<Item> listItem) {
     	String output = "";
     	// calculate the avg price
