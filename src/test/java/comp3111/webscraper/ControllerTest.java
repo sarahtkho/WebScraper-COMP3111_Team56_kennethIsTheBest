@@ -1,5 +1,6 @@
 package comp3111.webscraper;
 
+import org.junit.Rule;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -10,6 +11,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 public class ControllerTest {
+	@Rule public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();	
 	
 	private List<Item> result;
 	
