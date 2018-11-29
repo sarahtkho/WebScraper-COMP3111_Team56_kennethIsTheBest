@@ -100,7 +100,7 @@ public class Controller {
      * Initializer. Initializes the labels on the Summary tab and Refine button and clear the table.
      */
     @FXML
-    private void initialize() {
+    public void initialize() {
     	lastSearch.setDisable(true);
     	textAreaConsole.setText("");
     	labelCount.setText("<total>");
@@ -196,7 +196,6 @@ public class Controller {
     @FXML
     private void actionSearch() {
     	refine.setDisable(false);
-    	
     	lastSearch.setDisable(false);
     	System.out.println("actionSearch: " + textFieldKeyword.getText());
     	List<Item> result = scraper.scrape(textFieldKeyword.getText());
@@ -226,7 +225,7 @@ public class Controller {
      * Called when the Last Search button is pressed. Retrieves last search result and updates the tabs.
      */
     @FXML
-    private void actionNew() {
+    public void actionNew() {
     	lastSearch.setDisable(true);
     	System.out.println("actionNew");
     	if(lastResult.size()!=0) {
@@ -246,7 +245,7 @@ public class Controller {
      * Called when the Quit button is pressed. Terminates the program.
      */
     @FXML
-    private void actionQuit() {
+    public void actionQuit() {
     	Platform.exit();
     	System.exit(0);
     }
@@ -255,7 +254,7 @@ public class Controller {
      * Called when the Close button is pressed. Resets the system.
      */
     @FXML
-    private void actionClose() {
+    public void actionClose() {
     	initialize();
     }
     
@@ -263,7 +262,7 @@ public class Controller {
      * Called when the About Your Team button is pressed. Shows team information in a pop-up window.
      */
     @FXML
-    private void actionAbout() {
+    public void actionAbout() {
     	Alert alert = new Alert(AlertType.INFORMATION);
     	alert.setTitle("Team Information");
     	alert.setHeaderText("Team Information: ");

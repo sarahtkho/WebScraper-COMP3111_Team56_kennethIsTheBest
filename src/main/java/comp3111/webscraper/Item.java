@@ -20,6 +20,9 @@ public class Item implements Comparable<Item>{
 	private String StringDate;
 	private Hyperlink link;
 	
+	/**
+	 * Default constructor
+	 */
 	public Item() {
 		this.postedDate= Calendar.getInstance();
 	}
