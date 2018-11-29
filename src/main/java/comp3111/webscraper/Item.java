@@ -2,6 +2,8 @@ package comp3111.webscraper;
 
 import java.util.Calendar;
 
+import javafx.scene.control.Hyperlink;
+
  /** 
   * Contains the items information that are scraped from the selling portals, such as it's name, price, url and postdate
   * It implements interface Comparable for comparing the price between items
@@ -14,6 +16,9 @@ public class Item implements Comparable<Item>{
 	private double price ;
 	private String url ;
 	private Calendar postedDate;
+	
+	private String StringDate;
+	private Hyperlink link;
 	
 	/**
 	 * Default constructor
@@ -68,7 +73,24 @@ public class Item implements Comparable<Item>{
 	 */
 	public void setUrl(String url) {
 		this.url = url;
+		setLink();
 	}
+	
+	/**
+	 * Set item Hyperlink
+	 */
+	public void setLink() {
+		link = new Hyperlink(url);
+	}
+	
+	/**
+	 * Get item url
+	 * @return Item Hyperlink
+	 */
+	public Hyperlink getLink() {
+		return link;
+	}
+	
 	/**
 	 * Used to sort all items by price
 	 * @param other Another item in the result vector
@@ -92,6 +114,10 @@ public class Item implements Comparable<Item>{
 		return postedDate;
 	}
 	
+	/**
+	 * Get item postdate as a String
+	 * @return The date of the item being posted on the selling portal in String (e.g. 2018-11-18 00:24)
+	 */
 	public String getStringDate() {
 		return postedDate.get(Calendar.YEAR) + "-" + (postedDate.get(Calendar.MONTH)+1) + "-" + postedDate.get(Calendar.DAY_OF_MONTH)+" "+postedDate.get(Calendar.HOUR)+":"+postedDate.get(Calendar.MINUTE);
 		// Month get a +1 for MONTH start at 0; 0 == JAN

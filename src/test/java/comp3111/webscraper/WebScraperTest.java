@@ -1,10 +1,12 @@
 package comp3111.webscraper;
 
 import static org.junit.Assert.*;
+
+import org.junit.Rule;
 import org.junit.Test;
 
 public class WebScraperTest {
-
+	@Rule public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
 	@Test
 	public void testScrape() {
 		WebScraper scraper = new WebScraper();

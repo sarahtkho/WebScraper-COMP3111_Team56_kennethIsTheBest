@@ -22,6 +22,16 @@ import java.util.ArrayList;
 import javafx.application.*;
 import java.text.DecimalFormat;
 
+import javafx.scene.control.Button;
+
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
+
 /**
  * 
  * @author kevinw
@@ -53,6 +63,24 @@ public class Controller {
     @FXML
     private TextArea textAreaConsole;
     
+    @FXML	
+	private TableView<Item> table;
+
+	@FXML	
+	private TableColumn<TableView<Item>, String> titleCol;
+
+	@FXML	
+	private TableColumn<TableView<Item>, Double> priceCol;
+
+	@FXML	
+	private TableColumn<TableView<Item>, Hyperlink> urlCol;
+
+	@FXML	
+	private TableColumn<TableView<Item>, String> dateCol;
+
+	@FXML
+	private Button refine;
+    
     private WebScraper scraper;
     
     private HostServices hostService;
@@ -69,7 +97,7 @@ public class Controller {
     }
 
     /**
-     * Default initializer. It is empty.
+     * Initializer. Initializes the labels on the Summary tab and Refine button and clear the table.
      */
     @FXML
     public void initialize() {
@@ -84,6 +112,14 @@ public class Controller {
     	lastResult = new ArrayList<Item>();
     	newResult = new ArrayList<Item>();
     	textFieldKeyword.setText("");
+    	
+    	refine.setDisable(true);
+    	table.getItems().clear();
+    	titleCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, String>("title"));
+		priceCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Double>("price"));
+		urlCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Hyperlink>("link"));
+		urlCol.setCellFactory(new HyperlinkCell());
+		dateCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, String>("StringDate"));
     }
     
     public void setHostServices(HostServices hostServices) {
@@ -91,11 +127,19 @@ public class Controller {
     }
     
     /**
-     * Called when the search button is pressed. Set data that will be displayed in Console and Summary tab
+     * Display the raw data on the Console; summarize data and display the result on Summary tab.
      * @param listItem The items that are scraped from the two selling portals
      */
     @FXML
-    public void summarizing(List<Item> listItem) {
+    private void summarizing(List<Item> listItem) {
+    	if (listItem.isEmpty()) {
+	    	labelPrice.setText("-");
+			labelMin.setText("-");
+			labelMin.setOnAction(null);
+			labelLatest.setText("-");
+			labelLatest.setOnAction(null);
+    	}
+    	
     	String output = "";
     	// calculate the avg price
     	int countPrice = 0;
@@ -146,8 +190,12 @@ public class Controller {
     	labelLatest.setText(lastDate.getStringDate());
     }
     
+    /**
+     * Called when the Go button is pressed. Keeps track of current and last search result; summarizes and displays data.
+     */
     @FXML
-    public void actionSearch() {
+    private void actionSearch() {
+    	refine.setDisable(false);
     	lastSearch.setDisable(false);
     	System.out.println("actionSearch: " + textFieldKeyword.getText());
     	List<Item> result = scraper.scrape(textFieldKeyword.getText());
@@ -162,6 +210,7 @@ public class Controller {
     	if (result.size() !=0) {
     		summarizing(result);
 	    	newResult.addAll(result);
+	    	displayTable(result);
 	    	
     	} else {
     		labelPrice.setText("-");
@@ -171,8 +220,9 @@ public class Controller {
     		labelLatest.setOnAction(null);
     	}
     }
+    
     /**
-     * Called when the new button is pressed. Very dummy action - print something in the command prompt.
+     * Called when the Last Search button is pressed. Retrieves last search result and updates the tabs.
      */
     @FXML
     public void actionNew() {
@@ -180,22 +230,37 @@ public class Controller {
     	System.out.println("actionNew");
     	if(lastResult.size()!=0) {
     		summarizing(lastResult);
+    		refine.setDisable(false);
+    		displayTable(lastResult);
+    		newResult.clear();
+			newResult.addAll(lastResult);
+			lastResult.clear();
     	} else {
     		System.out.println("no previous result");
     		initialize();
     	}
     }
+    
+    /**
+     * Called when the Quit button is pressed. Terminates the program.
+     */
     @FXML
     public void actionQuit() {
     	Platform.exit();
     	System.exit(0);
     }
 
+    /**
+     * Called when the Close button is pressed. Resets the system.
+     */
     @FXML
     public void actionClose() {
     	initialize();
     }
     
+    /**
+     * Called when the About Your Team button is pressed. Shows team information in a pop-up window.
+     */
     @FXML
     public void actionAbout() {
     	Alert alert = new Alert(AlertType.INFORMATION);
@@ -204,4 +269,77 @@ public class Controller {
     	alert.setContentText("Name: \tStudent ID: \tGithub account: \nHo Wai Kin\twkhoae\tjohnnyn2\nFung Hing Lun\thlfungad\tvictor0362\nHo Tsz Kiu\ttkhoad\tsarahtkho");
     	alert.showAndWait();
     }
+    
+    /**
+	 * Called when the Refine button is pressed. Filters out the Items without the user-entered keyword in the title; then
+	 * summarizes and displays the result on Console and Table.
+	 */
+    @FXML
+    private void actionRefine() {
+    	System.out.println("actionRefine: " + textFieldKeyword.getText());
+		refine.setDisable(true);
+		List<Item> result = new ArrayList<Item>();
+		
+		for (Item i : newResult) {
+			if(i.getTitle().contains(textFieldKeyword.getText())) {
+				result.add(i);
+				
+			}
+		}
+		if (result.isEmpty()) {
+			labelCount.setText("0");
+			labelPrice.setText("-");
+			labelMin.setText("-");
+			labelMin.setOnAction(null);
+			labelLatest.setText("-");
+			labelLatest.setOnAction(null);
+			textAreaConsole.setText("There is no item with the keyword " + textFieldKeyword.getText() + ".");
+    	}
+		else {
+			displayTable(result);
+			summarizing(result);
+		}
+		System.out.println("Finish refine.");
+    }
+    
+    /**
+	 * Method for displaying a List of Item objects on the Table tab.
+	 * @param result The list to be displayed.
+	 */
+    private void displayTable(List<Item> result) {
+    	System.out.println("displayTable");
+    	table.getItems().clear();
+    	if (!result.isEmpty()) {
+    		ObservableList<Item> l = FXCollections.observableList(result);
+			table.setItems(l);
+    	}
+    }
+    
+    /**
+	 * Class for tablecells that contain a hyperlink and open a browser when the hyperlink is clicked.
+	 */
+	public class HyperlinkCell implements Callback<TableColumn<TableView<Item>, Hyperlink>, TableCell<TableView<Item>, Hyperlink>> {
+		public HostServices getHostServices() {
+			return hostService;
+		}
+
+		@Override
+		public TableCell<TableView<Item>, Hyperlink> call(TableColumn<TableView<Item>, Hyperlink> arg) {
+			TableCell<TableView<Item>, Hyperlink> cell = new TableCell<TableView<Item>, Hyperlink>() {
+				@Override
+				protected void updateItem(Hyperlink item, boolean empty) {
+					setGraphic(/*empty ? null : */item);
+					if (!empty)
+						item.setOnAction(new EventHandler<ActionEvent>() {
+							@Override
+							public void handle(ActionEvent e) {
+								System.out.println("open: "+item.getText());
+								hostService.showDocument(item.getText());
+							}
+						});
+				}
+			};
+			return cell;
+		}
+	}
 }

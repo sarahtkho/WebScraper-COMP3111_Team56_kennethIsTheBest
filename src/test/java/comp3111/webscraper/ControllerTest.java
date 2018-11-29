@@ -1,5 +1,6 @@
 package comp3111.webscraper;
 
+import org.junit.Rule;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -12,7 +13,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.Label;
 
 public class ControllerTest {
-	
+	@Rule public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
 	@Test
 	public void testSetHostService() {
 		WebScraperApplication wa = new WebScraperApplication();
