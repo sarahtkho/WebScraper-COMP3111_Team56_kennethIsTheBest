@@ -7,7 +7,7 @@ import java.util.List;
 public class WebScraperTest {
 	
 	private List<Item> result;
-	WebScraper wsObject;
+	private WebScraper wsObject;
 	
 	public WebScraperTest() {
 		WebScraper ws = new WebScraper();
