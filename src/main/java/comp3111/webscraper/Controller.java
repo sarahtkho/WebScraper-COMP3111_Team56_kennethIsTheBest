@@ -115,6 +115,11 @@ public class Controller {
     	
     	refine.setDisable(true);
     	table.getItems().clear();
+    	titleCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, String>("title"));
+		priceCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Double>("price"));
+		urlCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Hyperlink>("link"));
+		urlCol.setCellFactory(new HyperlinkCell());
+		dateCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, String>("StringDate"));
     }
     
     public void setHostServices(HostServices hostServices) {
@@ -127,6 +132,14 @@ public class Controller {
      */
     @FXML
     private void summarizing(List<Item> listItem) {
+    	if (listItem.isEmpty()) {
+	    	labelPrice.setText("-");
+			labelMin.setText("-");
+			labelMin.setOnAction(null);
+			labelLatest.setText("-");
+			labelLatest.setOnAction(null);
+    	}
+    	
     	String output = "";
     	// calculate the avg price
     	int countPrice = 0;
@@ -198,7 +211,6 @@ public class Controller {
     	if (result.size() !=0) {
     		summarizing(result);
 	    	newResult.addAll(result);
-	    	
 	    	displayTable(result);
 	    	
     	} else {
@@ -220,7 +232,6 @@ public class Controller {
     	if(lastResult.size()!=0) {
     		summarizing(lastResult);
     		refine.setDisable(false);
-    		
     		displayTable(lastResult);
     		newResult.clear();
 			newResult.addAll(lastResult);
@@ -269,14 +280,26 @@ public class Controller {
     	System.out.println("actionRefine: " + textFieldKeyword.getText());
 		refine.setDisable(true);
 		List<Item> result = new ArrayList<Item>();
+		
 		for (Item i : newResult) {
 			if(i.getTitle().contains(textFieldKeyword.getText())) {
 				result.add(i);
 				
 			}
 		}
-		summarizing(result);
-		displayTable(result);
+		if (result.isEmpty()) {
+			labelCount.setText("0");
+			labelPrice.setText("-");
+			labelMin.setText("-");
+			labelMin.setOnAction(null);
+			labelLatest.setText("-");
+			labelLatest.setOnAction(null);
+			textAreaConsole.setText("There is no item with the keyword " + textFieldKeyword.getText() + ".");
+    	}
+		else {
+			displayTable(result);
+			summarizing(result);
+		}
 		System.out.println("Finish refine.");
     }
     
@@ -287,14 +310,10 @@ public class Controller {
     private void displayTable(List<Item> result) {
     	System.out.println("displayTable");
     	table.getItems().clear();
-    	ObservableList<Item> l = FXCollections.observableList(result);
-		table.setItems(l);
-		titleCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, String>("title"));
-		priceCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Double>("price"));
-		urlCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, Hyperlink>("link"));
-		urlCol.setCellFactory(new HyperlinkCell());
-		dateCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, String>("StringDate"));
-		
+    	if (!result.isEmpty()) {
+    		ObservableList<Item> l = FXCollections.observableList(result);
+			table.setItems(l);
+    	}
     }
     
     /**
@@ -310,7 +329,7 @@ public class Controller {
 			TableCell<TableView<Item>, Hyperlink> cell = new TableCell<TableView<Item>, Hyperlink>() {
 				@Override
 				protected void updateItem(Hyperlink item, boolean empty) {
-					setGraphic(empty ? null : item);
+					setGraphic(/*empty ? null : */item);
 					if (!empty)
 						item.setOnAction(new EventHandler<ActionEvent>() {
 							@Override
