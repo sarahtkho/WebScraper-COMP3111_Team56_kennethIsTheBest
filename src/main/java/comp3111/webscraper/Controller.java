@@ -279,14 +279,7 @@ public class Controller {
     private void actionRefine() {
     	System.out.println("actionRefine: " + textFieldKeyword.getText());
 		refine.setDisable(true);
-		List<Item> result = new ArrayList<Item>();
-		
-		for (Item i : newResult) {
-			if(i.getTitle().contains(textFieldKeyword.getText())) {
-				result.add(i);
-				
-			}
-		}
+		List<Item> result = filter(newResult);
 		if (result.isEmpty()) {
 			labelCount.setText("0");
 			labelPrice.setText("-");
@@ -301,6 +294,18 @@ public class Controller {
 			summarizing(result);
 		}
 		System.out.println("Finish refine.");
+    }
+    
+    /**
+   	 * Helper function for actionRefine()
+   	 */
+    private List<Item> filter(List<Item> result) {
+    	List<Item> list = new ArrayList<Item>();
+		for (Item i : result) {
+			if(i.getTitle().contains(textFieldKeyword.getText()))
+				list.add(i);
+		}
+		return list;
     }
     
     /**
