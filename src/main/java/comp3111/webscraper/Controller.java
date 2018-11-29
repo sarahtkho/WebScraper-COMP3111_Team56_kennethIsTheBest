@@ -15,7 +15,6 @@ import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 import javafx.scene.control.MenuItem;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -36,22 +35,27 @@ public class Controller {
     private MenuItem lastSearch;
 	
 	@FXML 
-    private Label labelCount; 
+    private Label labelCount;
+	private String labelCountString;
 
     @FXML 
-    private Label labelPrice; 
+    private Label labelPrice;
+    private String labelPriceString;
 
     @FXML 
-    private Hyperlink labelMin; 
+    private Hyperlink labelMin;
+    private String labelMinString;
 
     @FXML 
-    private Hyperlink labelLatest; 
+    private Hyperlink labelLatest;
+    private String labelLatestString;
 
     @FXML
     private TextField textFieldKeyword;
     
     @FXML
     private TextArea textAreaConsole;
+    private String textAreaConsoleString;
     
     private WebScraper scraper;
     
@@ -60,6 +64,10 @@ public class Controller {
     private List<Item> lastResult;
     
     private List<Item> newResult;
+    
+    private Item minItem;
+    
+    private Item lastDate;
     
     /**
      * Default controller
@@ -90,11 +98,30 @@ public class Controller {
     	this.hostService = hostServices;
     }
     
+    private void updateGUI() {
+    	labelCount.setText(labelCountString);
+    	textAreaConsole.setText(textAreaConsoleString);
+    	labelPrice.setText(labelPriceString);
+    	labelMin.setText(labelMinString);
+    	labelMin.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				hostService.showDocument(minItem.getUrl());
+			}
+		});
+    	labelLatest.setText(labelLatestString);
+    	labelLatest.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				hostService.showDocument(lastDate.getUrl());
+			}
+		});
+    }
+    
     /**
      * Called when the search button is pressed. Set data that will be displayed in Console and Summary tab
      * @param listItem The items that are scraped from the two selling portals
      */
-    @FXML
     private void summarizing(List<Item> listItem) {
     	String output = "";
     	// calculate the avg price
@@ -109,25 +136,12 @@ public class Controller {
     			// assign the first valid item to MIN or compare the item of MIN and in the result list 
     			if(minItem == null || minItem.getPrice()>item.getPrice()) {
     				minItem = item;
-    				labelMin.setOnAction(new EventHandler<ActionEvent>() {
-    					@Override
-    					public void handle(ActionEvent e) {
-    						hostService.showDocument(item.getUrl());
-    					}
-    				});
     			}
     			
     			// assign the first valid item to DATE or compare the item of DATE and in the result list
     			if(lastDate == null || lastDate.getDate().before(item.getDate())){
     				lastDate = item;
-    				labelLatest.setOnAction(new EventHandler<ActionEvent>() {
-    					@Override
-    					public void handle(ActionEvent e) {
-    						hostService.showDocument(item.getUrl());
-    					}
-    				});
     			}
-    				
     		}
     	}
     	output += "\nSearch on selling portal: Craigslist and Preloved."
@@ -137,13 +151,15 @@ public class Controller {
     			+ "\nSearch finsihed.\n";
     	output += "Items are sorted in ascending order of its price. If two items have the same price, item sold on Craiglist go first. If two items from the same portal has the same price, they can be sorted in any order.\n";
     	
-    	labelCount.setText(Integer.toString(listItem.size()));
-    	textAreaConsole.setText(output);
+    	this.lastDate = lastDate;
+    	this.minItem = minItem;
+    	labelCountString = Integer.toString(listItem.size());
+    	textAreaConsoleString = output;
     	DecimalFormat df = new DecimalFormat("#.00");
-    	labelPrice.setText(df.format(totalPrice/countPrice));
+    	labelPriceString = df.format(totalPrice/countPrice);
     	System.out.println("finish summarize");
-    	labelMin.setText(Double.toString(minItem.getPrice()));
-    	labelLatest.setText(lastDate.getStringDate());
+    	labelMinString = Double.toString(minItem.getPrice());
+    	labelLatestString = lastDate.getStringDate();
     }
     
     @FXML
@@ -162,7 +178,7 @@ public class Controller {
     	if (result.size() !=0) {
     		summarizing(result);
 	    	newResult.addAll(result);
-	    	
+	    	updateGUI();
     	} else {
     		labelPrice.setText("-");
     		labelMin.setText("-");
@@ -180,6 +196,7 @@ public class Controller {
     	System.out.println("actionNew");
     	if(lastResult.size()!=0) {
     		summarizing(lastResult);
+    		updateGUI();
     	} else {
     		System.out.println("no previous result");
     		initialize();

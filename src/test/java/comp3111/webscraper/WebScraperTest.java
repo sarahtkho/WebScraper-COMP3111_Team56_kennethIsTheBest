@@ -2,13 +2,22 @@ package comp3111.webscraper;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
+import java.util.List;
 
 public class WebScraperTest {
-
+	
+	private List<Item> result;
+	WebScraper wsObject;
+	
+	public WebScraperTest() {
+		WebScraper ws = new WebScraper();
+		wsObject = ws; 
+		result = ws.scrape("iphone");
+	}
+	
 	@Test
 	public void testScrape() {
-		WebScraper scraper = new WebScraper();
-		assertNotNull(scraper.scrape("iphone"));
+		assertNotNull(result);
 	}
 	
 	@Test
@@ -20,16 +29,12 @@ public class WebScraperTest {
 	
 	@Test
 	public void testGetNumPage() {
-		WebScraper scraper = new WebScraper();
-		scraper.scrape("iphone");
-		assertNotEquals(scraper.getNumPage("craigslist"), 0);
-		assertNotEquals(scraper.getNumPage("preloved"), 0);
+		assertNotEquals(wsObject.getNumPage("craigslist"), 0);
+		assertNotEquals(wsObject.getNumPage("preloved"), 0);
 	}
 	
 	@Test
 	public void testGetNumResults() {
-		WebScraper scraper = new WebScraper();
-		scraper.scrape("iphone");
-		assertNotEquals(scraper.getNumResults(), 0);
+		assertNotEquals(wsObject.getNumResults(), 0);
 	}
 }

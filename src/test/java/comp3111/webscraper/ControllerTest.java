@@ -4,14 +4,19 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
+import java.text.DecimalFormat;
+import java.util.List;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.Label;
-
 public class ControllerTest {
+	
+	private List<Item> result;
+	
+	public ControllerTest() {
+		WebScraper ws = new WebScraper();
+		result = ws.scrape("iphone");
+	}
 	
 	@Test
 	public void testSetHostService() {
@@ -47,73 +52,56 @@ public class ControllerTest {
 		return field;
 	}
 	
+	
 	@Test
-	public void testInitialize() {
+	public void testSummarazing() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, InstantiationException  {
 		Controller c = new Controller();
-		Method method = null;
-		try {
-			method = Controller.class.getDeclaredMethod("initualize");
-		} catch (NoSuchMethodException | SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Method m = c.getClass().getDeclaredMethod("summarizing", List.class);
+		m.setAccessible(true);
+		m.invoke(c,result);
 		
-		// fields need to be checked
-		Field[] fields = new Field[9];
-		fields[0] = findField("lastSearch");
-		fields[1] = findField("textAreaConsole");
-		fields[2] = findField("labelCount");
-		fields[3] = findField("labelPrice");
-		fields[4] = findField("labelMin");
-		fields[5] = findField("labelLatest");
-		fields[6] = findField("lastResult");
-		fields[7] = findField("newResult");
-		fields[8] = findField("textFieldKeyword");
+		Field[] fields = new Field[4];
+		fields[0] = findField("labelCountString");
+		fields[1] = findField("labelPriceString");
+		fields[2] = findField("labelMinString");
+		fields[3] = findField("labelLatestString");
 		
-		method.setAccessible(true);
-		try {
-			method.invoke(c);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail("invokation error");
-		}
-		
-		for(int i=0; i<9;i++) {
+		for(int i=0; i<4;i++) {
 			if(fields[i]==null)
 				fail("incorrect field name for ["+i+"]");
 			else
 				fields[i].setAccessible(true);
 		}
 		
-		// MenuItem lastSearch
-		try {
-			MenuItem mi = (MenuItem)fields[0].get(c);
-			assertEquals(mi.isDisable(),true);
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail("fail in field[0].get(c)");
-		}
+		int countPrice = 0;
+    	double totalPrice = 0.0;
+    	Item minItem = null, lastDate = null;
+    	for (Item item : result) {
+    		if(item.getPrice()>0.0) {
+    			countPrice++;
+    			totalPrice+= item.getPrice();
+    			if(minItem == null || minItem.getPrice()>item.getPrice()) {
+    				minItem = item;
+    			}
+    			
+    			if(lastDate == null || lastDate.getDate().before(item.getDate())){
+    				lastDate = item;
+    			}
+    		}
+    	}
 		
-		// TextArea textAreaConsole
-		try {
-			TextArea ta = (TextArea)fields[1].get(c);
-			assertEquals(ta.getText(),"");
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail("fail in field[1].get(c)");
+		if(!fields[0].get(c).equals(Integer.toString(result.size()))) {
+			fail(fields[0].get(c) +" "+ Integer.toString(result.size()));
 		}
+    	
+    	DecimalFormat df = new DecimalFormat("#.00");
+		if(!fields[1].get(c).equals( df.format(totalPrice/countPrice)))
+			fail(fields[1].get(c) +" "+ df.format(totalPrice/countPrice));
 		
-		// Label labelCount
-		try {
-			Label l = (Label)fields[2].get(c);
-			assertEquals(l.getText(),"<total>");
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail("fail in field[2].get(c)");
-		}
+		if(!fields[2].get(c).equals(Double.toString(minItem.getPrice())))
+			fail(fields[2].get(c)+" "+Double.toString(minItem.getPrice()));
+		
+		if(!fields[3].get(c).equals(lastDate.getStringDate()))
+			fail(fields[3].get(c)+" "+lastDate.getStringDate());
 	}
 }
