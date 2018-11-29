@@ -1,6 +1,7 @@
 package comp3111.webscraper;
 
 
+import org.junit.Rule;
 import org.junit.Test;
 import static org.junit.Assert.*;
 /*
@@ -9,7 +10,7 @@ import static org.junit.Assert.*;
 import java.util.Calendar;
 
 public class ItemTest {
-
+	@Rule public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
 	@Test
 	public void testSetTitle() {
 		Item i = new Item();
