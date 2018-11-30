@@ -165,6 +165,7 @@ public class Controller {
 			labelMin.setOnAction(null);
 			labelLatest.setText("-");
 			labelLatest.setOnAction(null);
+			return;
     	}
     	
     	String output = "";
