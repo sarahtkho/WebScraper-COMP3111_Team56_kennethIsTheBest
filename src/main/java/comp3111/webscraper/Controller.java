@@ -33,7 +33,7 @@ import javafx.util.Callback;
 
 /**
  * 
- * @author kevinw
+ * @author Fung Hing Lun
  *
  *
  * Controller class that manage GUI interaction. Please see document about JavaFX for details.
@@ -130,10 +130,18 @@ public class Controller {
 		dateCol.setCellValueFactory(new PropertyValueFactory<TableView<Item>, String>("StringDate"));
     }
     
+    
+    /**
+     * Prepare to setup the event listener of Hyperlink Object
+     * @param hostServices get the Application hostService 
+     */
     public void setHostServices(HostServices hostServices) {
     	this.hostService = hostServices;
     }
     
+    /**
+     *  Update the GUI after summarizing thte data
+     */
     private void updateGUI() {
     	labelCount.setText(labelCountString);
     	textAreaConsole.setText(textAreaConsoleString);
