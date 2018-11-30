@@ -13,6 +13,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Label;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ControllerTest {
@@ -103,5 +104,25 @@ public class ControllerTest {
 		
 		if(!fields[3].get(c).equals(lastDate.getStringDate()))
 			fail(fields[3].get(c)+" "+lastDate.getStringDate());
+	}
+	
+	@Test
+	public void testFilter() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, InstantiationException  {
+		WebScraper ws = new WebScraper();
+		Controller c = new Controller();
+		
+		List<Item> result = ws.scrape("juice");
+		
+		Class<?> params[] = new Class[2];
+		params[0] = List.class;
+		params[1] = String.class;
+		
+		Object[] obj = new Object[2];
+		obj[0] = result;
+		obj[1] = "food";
+		
+		Method m = c.getClass().getDeclaredMethod("filter", params);
+		m.setAccessible(true);
+		assertNotNull(m.invoke(c,obj));
 	}
 }

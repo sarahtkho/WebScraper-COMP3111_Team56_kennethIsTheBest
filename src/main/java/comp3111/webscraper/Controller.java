@@ -295,7 +295,8 @@ public class Controller {
     private void actionRefine() {
     	System.out.println("actionRefine: " + textFieldKeyword.getText());
 		refine.setDisable(true);
-		List<Item> result = filter(newResult);
+		String keyword = textFieldKeyword.getText();
+		List<Item> result = filter(newResult, keyword);
 		if (result.isEmpty()) {
 			labelCount.setText("0");
 			labelPrice.setText("-");
@@ -314,11 +315,13 @@ public class Controller {
     
     /**
    	 * Helper function for actionRefine()
+   	 * @param result The List of Items to be refined.
+   	 * @return list The List of refined result. 
    	 */
-    private List<Item> filter(List<Item> result) {
+    private List<Item> filter(List<Item> result, String keyword) {
     	List<Item> list = new ArrayList<Item>();
 		for (Item i : result) {
-			if(i.getTitle().contains(textFieldKeyword.getText()))
+			if(i.getTitle().contains(keyword))
 				list.add(i);
 		}
 		return list;
